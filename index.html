@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Calendar & Events</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+        }
+
+        .calendar-section {
+            flex: 2;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-section {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .week-year {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            border: 1px solid #e5e7eb;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .week-grid .header {
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .time-cell {
+            background: rgba(255, 255, 255, 0.8);
+            color: #666;
+            font-size: 11px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+
+        .slot-cell {
+            background: rgba(255, 255, 255, 0.8);
+            height: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .slot-cell:hover {
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .slot-cell.today {
+            background: rgba(118, 75, 162, 0.12);
+        }
+
+        .event-chip {
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            top: 2px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            border: 1px solid rgba(102, 126, 234, 0.6);
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-size: 11px;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+
+        .event-chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .notes-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .selected-date {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .events-list {
+            flex: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .event-item {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .event-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-item.selected {
+            background: rgba(102, 126, 234, 0.25);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .event-time {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .event-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .no-events {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            margin-top: 50px;
+        }
+
+        .delete-button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .delete-button:hover {
+            background: #ff3742;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .calendar-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                flex: 1.5;
+            }
+            
+            .notes-section {
+                flex: 1;
+            }
+            
+            .week-grid {
+                grid-template-columns: 60px repeat(7, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <div class="week-year" id="weekYear"></div>
+            </div>
+            <div class="week-grid" id="weekGrid"></div>
+        </div>
+        
+        <div class="notes-section">
+            <div class="notes-header">Events</div>
+            <div class="selected-date" id="selectedDate">Select a day to view events</div>
+            <div class="events-list" id="eventsList">
+                <div class="no-events">Click on a day to add an event</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        let selectedDay = null;
+        let selectedEventIndex = null;
+        let events = {};
+
+        const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        function formatDayKey(dayIndex) {
+            return dayNames[dayIndex];
+        }
+
+        function formatDisplayDay(dayIndex) {
+            return dayNames[dayIndex];
+        }
+
+        function getWeekDays() {
+            return dayNames.map((day, index) => ({ name: day, index }));
+        }
+
+        function renderCalendar() {
+            const weekYear = document.getElementById('weekYear');
+            const weekGrid = document.getElementById('weekGrid');
+
+            const weekDays = getWeekDays();
+
+            weekYear.textContent = 'Weekly Schedule';
+            weekGrid.innerHTML = '';
+
+            // Top-left empty header
+            const emptyHeader = document.createElement('div');
+            emptyHeader.className = 'header';
+            emptyHeader.textContent = '';
+            weekGrid.appendChild(emptyHeader);
+
+            // Day headers Monday..Sunday
+            weekDays.forEach((day) => {
+                const header = document.createElement('div');
+                header.className = 'header';
+                header.textContent = day.name;
+                weekGrid.appendChild(header);
+            });
+
+            // Create time slots from 6am to 8pm
+            const startHour = 6;
+            const endHour = 20;
+            
+            for (let hour = startHour; hour <= endHour; hour++) {
+                // Time column
+                const timeCell = document.createElement('div');
+                timeCell.className = 'time-cell';
+                const ampm = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`;
+                timeCell.textContent = ampm;
+                weekGrid.appendChild(timeCell);
+
+                // 7 day columns for this hour
+                weekDays.forEach((day) => {
+                    const slot = document.createElement('div');
+                    slot.className = 'slot-cell';
+                    slot.dataset.day = day.index;
+                    slot.dataset.hour = String(hour);
+
+                    // Check if this is the start of an event
+                    const dayKey = formatDayKey(day.index);
+                    const dayEvents = events[dayKey] || [];
+                    const eventAtThisHour = dayEvents.find(ev => Number(ev.hour) === hour);
+                    
+                    if (eventAtThisHour) {
+                        const chip = document.createElement('div');
+                        chip.className = 'event-chip';
+                        chip.textContent = eventAtThisHour.title || 'Event';
+                        chip.title = eventAtThisHour.description ? 
+                            `${eventAtThisHour.title} — ${eventAtThisHour.description} (${eventAtThisHour.duration || 1}h)` : 
+                            `${eventAtThisHour.title} (${eventAtThisHour.duration || 1}h)`;
+                        
+                        // Style based on duration - span multiple cells
+                        const duration = eventAtThisHour.duration || 1;
+                        chip.style.height = `${(duration * 40) - 2}px`;
+                        
+                        // Click event to select this event in notes section
+                        chip.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            selectEvent(day.index, dayEvents.indexOf(eventAtThisHour));
+                        });
+                        
+                        slot.appendChild(chip);
+                    }
+
+                    // Empty slot click to add new event
+                    if (!eventAtThisHour) {
+                        slot.addEventListener('click', () => onSlotClick(day.index, hour));
+                    }
+                    
+                    weekGrid.appendChild(slot);
+                });
+            }
+        }
+
+        function selectDay(dayIndex) {
+            selectedDay = dayIndex;
+            selectedEventIndex = null;
+            const selectedDateElement = document.getElementById('selectedDate');
+            const eventsList = document.getElementById('eventsList');
+            
+            selectedDateElement.textContent = formatDisplayDay(dayIndex);
+            
+            // Load events for selected day
+            const dayKey = formatDayKey(dayIndex);
+            const dayEvents = events[dayKey] || [];
+            
+            eventsList.innerHTML = '';
+            
+            if (dayEvents.length === 0) {
+                const noEvents = document.createElement('div');
+                noEvents.className = 'no-events';
+                noEvents.textContent = 'No events for this day. Click a time slot to add an event.';
+                eventsList.appendChild(noEvents);
+            } else {
+                const withIndex = dayEvents.map((ev, originalIndex) => ({ ev, originalIndex }));
+                withIndex.sort((a, b) => Number(a.ev.hour) - Number(b.ev.hour));
+                withIndex.forEach(({ ev: event, originalIndex }, index) => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'event-item';
+                    if (selectedEventIndex === index) {
+                        eventElement.classList.add('selected');
+                    }
+                    
+                    const hour = Number(event.hour);
+                    const duration = event.duration || 1;
+                    const ampm = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`;
+                    const endHour = hour + duration;
+                    const endAmpm = endHour === 0 ? '12 AM' : endHour < 12 ? `${endHour} AM` : endHour === 12 ? '12 PM' : `${endHour - 12} PM`;
+                    
+                    eventElement.innerHTML = `
+                        <div class="event-time">${ampm} - ${endAmpm} (${duration}h)</div>
+                        <div class="event-title">${event.title}</div>
+                        ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                        <button class="delete-button" onclick="deleteEvent(${originalIndex}); event.stopPropagation();">Delete Event</button>
+                    `;
+                    
+                    eventElement.addEventListener('click', () => {
+                        selectedEventIndex = index;
+                        selectDay(selectedDay); // Refresh to show selection
+                    });
+                    
+                    eventsList.appendChild(eventElement);
+                });
+            }
+        }
+
+        function selectEvent(dayIndex, eventIndex) {
+            selectedDay = dayIndex;
+            selectedEventIndex = eventIndex;
+            selectDay(dayIndex);
+        }
+
+        async function deleteEvent(eventIndex) {
+            if (!confirm('Delete this event?')) return;
+            const dayKey = formatDayKey(selectedDay);
+            try {
+                const res = await fetch(`${API_BASE}/events?day=${encodeURIComponent(dayKey)}&index=${encodeURIComponent(eventIndex)}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.detail || 'Failed to delete event');
+                    return;
+                }
+                const data = await res.json();
+                events = data.events || {};
+                selectedEventIndex = null;
+                selectDay(selectedDay);
+                renderCalendar();
+            } catch (e) {
+                alert('Could not reach backend. Is it running on 127.0.0.1:8000?');
+            }
+        }
+
+        async function onSlotClick(dayIndex, hour) {
+            selectedDay = dayIndex;
+            const title = prompt('Event title:');
+            if (!title) return;
+            const description = prompt('Description (optional):');
+            const durationInput = prompt('Duration in hours (default: 1):');
+            const duration = durationInput ? parseInt(durationInput) || 1 : 1;
+
+            // Validate that the event fits within the 6am-8pm range
+            const startHour = 6;
+            const endHour = 20;
+            if (hour < startHour || hour + duration > endHour + 1) {
+                alert(`Event must be within ${startHour}am to ${endHour}pm range.`);
+                return;
+            }
+
+            // Check for overlapping events
+            const key = formatDayKey(dayIndex);
+            const dayEvents = events[key] || [];
+            const hasOverlap = dayEvents.some(existingEvent => {
+                const existingStart = Number(existingEvent.hour);
+                const existingEnd = existingStart + (existingEvent.duration || 1);
+                const newStart = hour;
+                const newEnd = hour + duration;
+                
+                return (newStart < existingEnd && newEnd > existingStart);
+            });
+
+            if (hasOverlap) {
+                alert('This time slot overlaps with an existing event. Please choose a different time.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/events`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        day: key,
+                        event: { title, description: description || '', hour: Number(hour), duration }
+                    })
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.detail || 'Failed to add event');
+                    return;
+                }
+                const data = await res.json();
+                events = data.events || {};
+                renderCalendar();
+                selectDay(selectedDay);
+            } catch (e) {
+                alert('Could not reach backend. Is it running on 127.0.0.1:8000?');
+            }
+        }
+
+        async function loadEvents() {
+            try {
+                const res = await fetch(`${API_BASE}/events`);
+                if (!res.ok) {
+                    throw new Error('Failed to load events');
+                }
+                const data = await res.json();
+                events = data.events || {};
+            } catch (e) {
+                // Keep empty events but notify user once
+                console.warn('Could not load events from backend:', e);
+            }
+        }
+
+        // Initialize calendar with backend data
+        (async () => {
+            await loadEvents();
+            renderCalendar();
+        })();
+
+        // Make calendar responsive to window resize
+        window.addEventListener('resize', () => {
+            renderCalendar();
+            if (selectedDay !== null) selectDay(selectedDay);
+        });
+    </script>
+</body>
+</html>
