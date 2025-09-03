@@ -283,6 +283,91 @@
                 grid-template-columns: 60px repeat(7, 1fr);
             }
         }
+
+        /* Notes view styles */
+        .notes-wrapper {
+            width: 100%;
+            height: calc(100vh - 56px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .notes-card {
+            width: min(900px, 95vw);
+            height: calc(100% - 40px);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .notes-list {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.8);
+            padding: 8px;
+            min-height: 0;
+        }
+
+        .note-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.25);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .note-item:hover {
+            background: rgba(102, 126, 234, 0.14);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .note-text {
+            flex: 1;
+            outline: none;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .note-text[contenteditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            color: #aaa;
+        }
+
+        .note-delete {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .note-delete:hover {
+            background: #ff3742;
+        }
     </style>
 </head>
 <body>
@@ -313,10 +398,12 @@
     </div>
 
     <div id="view-notes" class="view">
-        <div class="container" style="justify-content:center; align-items:center;">
-            <div style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px; background: rgba(255,255,255,0.85);">
-                <div style="font-size: 22px; font-weight: 700; color: #333; text-align:center;">Notes</div>
-                <div style="margin-top: 8px; color:#666; text-align:center;">This section is coming soon.</div>
+        <div class="notes-wrapper">
+            <div class="notes-card">
+                <div class="notes-title">Notes</div>
+                <div class="notes-list" id="notesList">
+                    <!-- Notes render here. The last row is always an empty editable line -->
+                </div>
             </div>
         </div>
     </div>
@@ -603,6 +690,8 @@
             if (viewName === 'calendar') {
                 renderCalendar();
                 if (selectedDay !== null) selectDay(selectedDay);
+            } else if (viewName === 'notes') {
+                initNotesView();
             }
         }
 
@@ -621,6 +710,118 @@
             renderCalendar();
             if (selectedDay !== null) selectDay(selectedDay);
         });
+
+        // Notes logic
+        async function fetchNotes() {
+            try {
+                const res = await fetch(`${API_BASE}/notes`);
+                if (!res.ok) throw new Error('Failed to load notes');
+                const data = await res.json();
+                return data.notes || [];
+            } catch (e) {
+                console.warn('Could not load notes from backend:', e);
+                return [];
+            }
+        }
+
+        async function createNote(text) {
+            const res = await fetch(`${API_BASE}/notes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            if (!res.ok) throw new Error('Failed to create note');
+            const data = await res.json();
+            return data.notes || [];
+        }
+
+        async function updateNote(id, text) {
+            const res = await fetch(`${API_BASE}/notes/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            if (!res.ok) throw new Error('Failed to update note');
+            const data = await res.json();
+            return data.notes || [];
+        }
+
+        async function deleteNote(id) {
+            const res = await fetch(`${API_BASE}/notes/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Failed to delete note');
+            const data = await res.json();
+            return data.notes || [];
+        }
+
+        function renderNotes(notes) {
+            const list = document.getElementById('notesList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            // Existing notes
+            notes.forEach(n => {
+                const row = document.createElement('div');
+                row.className = 'note-item';
+
+                const textEl = document.createElement('div');
+                textEl.className = 'note-text';
+                textEl.contentEditable = 'true';
+                textEl.textContent = n.text || '';
+                textEl.dataset.placeholder = 'Click to edit note';
+                textEl.addEventListener('blur', async () => {
+                    const newText = textEl.innerText;
+                    try {
+                        await updateNote(n.id, newText);
+                    } catch (e) {
+                        alert('Failed to save note');
+                    }
+                });
+
+                const del = document.createElement('button');
+                del.className = 'note-delete';
+                del.textContent = 'Delete';
+                del.addEventListener('click', async () => {
+                    try {
+                        const updated = await deleteNote(n.id);
+                        renderNotes(updated);
+                    } catch (e) {
+                        alert('Failed to delete note');
+                    }
+                });
+
+                row.appendChild(textEl);
+                row.appendChild(del);
+                list.appendChild(row);
+            });
+
+            // Empty composer row always present at bottom
+            const composer = document.createElement('div');
+            composer.className = 'note-item';
+            const input = document.createElement('div');
+            input.className = 'note-text';
+            input.contentEditable = 'true';
+            input.dataset.placeholder = 'Add a note... (Cmd/Ctrl+Enter to save)';
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    const text = input.innerText;
+                    if (!text.trim()) return;
+                    try {
+                        const updated = await createNote(text);
+                        renderNotes(updated);
+                    } catch (err) {
+                        alert('Failed to add note');
+                    }
+                }
+            });
+            composer.appendChild(input);
+            list.appendChild(composer);
+        }
+
+        async function initNotesView() {
+            const notes = await fetchNotes();
+            renderNotes(notes);
+        }
     </script>
 </body>
 </html>

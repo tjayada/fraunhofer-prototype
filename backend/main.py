@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field, validator
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVENTS_FILE = PROJECT_ROOT / "events.json"
+NOTES_FILE = PROJECT_ROOT / "notes.json"
 
 
 class Event(BaseModel):
@@ -44,6 +45,10 @@ def _ensure_file_exists() -> None:
         with _file_lock:
             if not EVENTS_FILE.exists():
                 EVENTS_FILE.write_text(json.dumps({}, indent=2))
+    if not NOTES_FILE.exists():
+        with _file_lock:
+            if not NOTES_FILE.exists():
+                NOTES_FILE.write_text(json.dumps({"notes": [], "next_id": 1}, indent=2))
 
 
 def _read_events() -> Dict[str, List[dict]]:
@@ -67,6 +72,42 @@ def _read_events() -> Dict[str, List[dict]]:
 def _write_events(events: Dict[str, List[dict]]) -> None:
     with _file_lock:
         EVENTS_FILE.write_text(json.dumps(events, indent=2))
+
+
+# Notes models and helpers
+class Note(BaseModel):
+    id: int
+    text: str = Field("", max_length=10000)
+
+
+class NotesResponse(BaseModel):
+    notes: List[Note]
+
+
+def _read_notes() -> Dict[str, object]:
+    _ensure_file_exists()
+    with _file_lock:
+        try:
+            raw = NOTES_FILE.read_text()
+            data = json.loads(raw) if raw.strip() else {"notes": [], "next_id": 1}
+            if not isinstance(data, dict):
+                return {"notes": [], "next_id": 1}
+            notes = data.get("notes", [])
+            next_id = data.get("next_id", 1)
+            if not isinstance(notes, list):
+                notes = []
+            normalized_notes: List[dict] = []
+            for item in notes:
+                if isinstance(item, dict) and "id" in item and "text" in item:
+                    normalized_notes.append({"id": int(item["id"]), "text": str(item["text"])})
+            return {"notes": normalized_notes, "next_id": int(next_id) if isinstance(next_id, int) else 1}
+        except Exception:
+            return {"notes": [], "next_id": 1}
+
+
+def _write_notes(payload: Dict[str, object]) -> None:
+    with _file_lock:
+        NOTES_FILE.write_text(json.dumps(payload, indent=2))
 
 
 app = FastAPI(title="Calendar Events API")
@@ -147,4 +188,60 @@ def delete_event(
 def root() -> dict:
     return {"status": "ok"}
 
+
+# Notes endpoints
+@app.get("/notes", response_model=NotesResponse)
+def get_notes() -> NotesResponse:
+    data = _read_notes()
+    notes = [Note(**n) for n in data["notes"]]
+    return NotesResponse(notes=notes)
+
+
+class CreateNoteRequest(BaseModel):
+    text: str = Field("", max_length=10000)
+
+
+@app.post("/notes", response_model=NotesResponse)
+def create_note(payload: CreateNoteRequest) -> NotesResponse:
+    state = _read_notes()
+    notes: List[dict] = state["notes"]  # type: ignore[assignment]
+    next_id: int = state["next_id"]  # type: ignore[assignment]
+    new_note = {"id": next_id, "text": payload.text}
+    notes.append(new_note)
+    state["notes"] = notes
+    state["next_id"] = next_id + 1
+    _write_notes(state)
+    return NotesResponse(notes=[Note(**n) for n in notes])
+
+
+class UpdateNoteRequest(BaseModel):
+    text: str = Field("", max_length=10000)
+
+
+@app.put("/notes/{note_id}", response_model=NotesResponse)
+def update_note(note_id: int, payload: UpdateNoteRequest) -> NotesResponse:
+    state = _read_notes()
+    notes: List[dict] = state["notes"]  # type: ignore[assignment]
+    updated = False
+    for n in notes:
+        if int(n.get("id")) == note_id:
+            n["text"] = payload.text
+            updated = True
+            break
+    if not updated:
+        raise HTTPException(status_code=404, detail="Note not found")
+    _write_notes(state)
+    return NotesResponse(notes=[Note(**n) for n in notes])
+
+
+@app.delete("/notes/{note_id}", response_model=NotesResponse)
+def delete_note(note_id: int) -> NotesResponse:
+    state = _read_notes()
+    notes: List[dict] = state["notes"]  # type: ignore[assignment]
+    filtered = [n for n in notes if int(n.get("id")) != note_id]
+    if len(filtered) == len(notes):
+        raise HTTPException(status_code=404, detail="Note not found")
+    state["notes"] = filtered
+    _write_notes(state)
+    return NotesResponse(notes=[Note(**n) for n in filtered])
 
