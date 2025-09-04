@@ -83,6 +83,7 @@ def _write_events(events: Dict[str, List[dict]]) -> None:
 class Note(BaseModel):
     id: int
     text: str = Field("", max_length=10000)
+    category: str = Field("personal", pattern=r"^(personal|work|free time)$")
 
 
 class NotesResponse(BaseModel):
@@ -104,7 +105,10 @@ def _read_notes() -> Dict[str, object]:
             normalized_notes: List[dict] = []
             for item in notes:
                 if isinstance(item, dict) and "id" in item and "text" in item:
-                    normalized_notes.append({"id": int(item["id"]), "text": str(item["text"])})
+                    category = item.get("category", "personal")
+                    if category not in ["personal", "work", "free time"]:
+                        category = "personal"
+                    normalized_notes.append({"id": int(item["id"]), "text": str(item["text"]), "category": category})
             return {"notes": normalized_notes, "next_id": int(next_id) if isinstance(next_id, int) else 1}
         except Exception:
             return {"notes": [], "next_id": 1}
@@ -239,6 +243,7 @@ def get_notes() -> NotesResponse:
 
 class CreateNoteRequest(BaseModel):
     text: str = Field("", max_length=10000)
+    category: str = Field("personal", pattern=r"^(personal|work|free time)$")
 
 
 @app.post("/notes", response_model=NotesResponse)
@@ -246,7 +251,7 @@ def create_note(payload: CreateNoteRequest) -> NotesResponse:
     state = _read_notes()
     notes: List[dict] = state["notes"]  # type: ignore[assignment]
     next_id: int = state["next_id"]  # type: ignore[assignment]
-    new_note = {"id": next_id, "text": payload.text}
+    new_note = {"id": next_id, "text": payload.text, "category": payload.category}
     notes.append(new_note)
     state["notes"] = notes
     state["next_id"] = next_id + 1
@@ -256,6 +261,7 @@ def create_note(payload: CreateNoteRequest) -> NotesResponse:
 
 class UpdateNoteRequest(BaseModel):
     text: str = Field("", max_length=10000)
+    category: str = Field("personal", pattern=r"^(personal|work|free time)$")
 
 
 @app.put("/notes/{note_id}", response_model=NotesResponse)
@@ -266,6 +272,7 @@ def update_note(note_id: int, payload: UpdateNoteRequest) -> NotesResponse:
     for n in notes:
         if int(n.get("id")) == note_id:
             n["text"] = payload.text
+            n["category"] = payload.category
             updated = True
             break
     if not updated:

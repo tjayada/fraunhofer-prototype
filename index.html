@@ -12,7 +12,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI Bold', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
             margin: 0;
@@ -22,7 +23,7 @@
 
         .container {
             width: 100vw;
-            height: calc(100vh - 112px);
+            height: calc(100vh - 142px);
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
@@ -44,12 +45,12 @@
             height: 112px;
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 12px;
+            padding: 10px 0 20px 0;
             gap: 6px;
+            margin-bottom: 10px;
         }
 
         .header-row {
@@ -63,18 +64,31 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+        }
+
+        .header-left {
+            padding-left: 20px;
+        }
+
+        .header-right {
+            padding-right: 20px;
         }
 
         .app-logo {
-            height: 72px;
+            height: 64px;
             border-radius: 6px;
+            margin-left: 8px;
+            margin-top: 16px;
         }
 
         .greeting {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
+            background: transparent;
+            padding: 8px 0;
+            margin: 0;
         }
 
         .burger {
@@ -120,9 +134,10 @@
             padding: 8px 14px;
             border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: bold;
             transition: all 0.2s ease;
         }
+
 
         .nav-item:hover {
             background: rgba(102, 126, 234, 0.12);
@@ -187,13 +202,13 @@
 
         .week-year {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
         }
 
         .card-title {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
         }
 
@@ -209,7 +224,7 @@
         }
 
         .week-grid .header {
-            font-weight: 600;
+            font-weight: bold;
             background: rgba(255, 255, 255, 0.9);
             color: #333;
             text-align: center;
@@ -217,6 +232,73 @@
             position: sticky;
             top: 0;
             z-index: 10;
+        }
+
+        /* Colorful weekday headers */
+        .week-grid .header.monday {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .week-grid .header.tuesday {
+            background: linear-gradient(135deg, #4ecdc4, #6ed5cd);
+            color: white;
+        }
+
+        .week-grid .header.wednesday {
+            background: linear-gradient(135deg, #45b7d1, #6bc5d8);
+            color: white;
+        }
+
+        .week-grid .header.thursday {
+            background: linear-gradient(135deg, #96ceb4, #a8d5c1);
+            color: white;
+        }
+
+        .week-grid .header.friday {
+            background: linear-gradient(135deg, #feca57, #fed976);
+            color: white;
+        }
+
+        /* Colorful day columns */
+        .week-grid .slot-cell.monday {
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .week-grid .slot-cell.tuesday {
+            background: rgba(78, 205, 196, 0.05);
+        }
+
+        .week-grid .slot-cell.wednesday {
+            background: rgba(69, 183, 209, 0.05);
+        }
+
+        .week-grid .slot-cell.thursday {
+            background: rgba(150, 206, 180, 0.05);
+        }
+
+        .week-grid .slot-cell.friday {
+            background: rgba(254, 202, 87, 0.05);
+        }
+
+        .week-grid .slot-cell.monday:hover {
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .week-grid .slot-cell.tuesday:hover {
+            background: rgba(78, 205, 196, 0.15);
+        }
+
+        .week-grid .slot-cell.wednesday:hover {
+            background: rgba(69, 183, 209, 0.15);
+        }
+
+        .week-grid .slot-cell.thursday:hover {
+            background: rgba(150, 206, 180, 0.15);
+        }
+
+        .week-grid .slot-cell.friday:hover {
+            background: rgba(254, 202, 87, 0.15);
         }
 
         .time-cell {
@@ -277,15 +359,15 @@
 
         .notes-header {
             font-size: 20px;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             flex-shrink: 0;
         }
 
         .selected-date {
             color: #667eea;
-            font-weight: 600;
+            font-weight: bold;
             margin-bottom: 10px;
             flex-shrink: 0;
         }
@@ -329,7 +411,7 @@
         }
 
         .event-title {
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
             font-size: 16px;
         }
@@ -385,7 +467,7 @@
         /* Chat styles */
         .notes-wrapper {
             width: 100%;
-            height: calc(100vh - 112px);
+            height: calc(100vh - 142px);
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -393,7 +475,7 @@
         }
 
         .notes-card {
-            width: min(900px, 95vw);
+            width: min(1000px, 95vw);
             height: calc(100% - 40px);
             border: 2px solid #e0e0e0;
             border-radius: 12px;
@@ -403,9 +485,69 @@
             flex-direction: column;
         }
 
+        .notes-content {
+            display: flex;
+            flex: 1;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .notes-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.8);
+            padding: 12px;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .category-item:hover {
+            background: rgba(102, 126, 234, 0.08);
+            border-color: rgba(102, 126, 234, 0.25);
+        }
+
+        .category-item.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.4);
+            color: #333;
+        }
+
+        .category-icon {
+            font-size: 16px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .notes-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
         .notes-title {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: normal;
             color: #333;
             text-align: left;
             margin-bottom: 12px;
@@ -446,6 +588,7 @@
             font-size: 15px;
             color: #333;
             white-space: pre-wrap;
+            font-weight: normal;
         }
 
         .note-text[contenteditable="true"]:empty:before {
@@ -470,13 +613,38 @@
         /* Notes specific styles */
         .notes-composer {
             display: flex;
+            flex-direction: column;
             gap: 8px;
-            align-items: flex-end;
             margin-top: 12px;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             background: rgba(255,255,255,0.9);
+        }
+
+        .composer-header {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .category-select {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.9);
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .category-select:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .category-select:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.8);
         }
 
         .note-input {
@@ -490,6 +658,7 @@
             resize: vertical;
             min-height: 60px;
             font-family: inherit;
+            font-weight: normal;
         }
 
         .note-input::placeholder {
@@ -542,7 +711,7 @@
 
         .chat-header {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: normal;
             color: #333;
             margin-bottom: 12px;
             flex-shrink: 0;
@@ -580,6 +749,7 @@
             color: #222;
             background: rgba(102, 126, 234, 0.12);
             border: 1px solid rgba(102, 126, 234, 0.3);
+            font-weight: normal;
         }
         .chat-row.user .chat-bubble {
             background: linear-gradient(135deg, rgba(102,126,234,0.9), rgba(118,75,162,0.9));
@@ -606,6 +776,7 @@
             font-size: 14px;
             color: #333;
             padding: 8px;
+            font-weight: normal;
         }
 
         .send-button {
@@ -648,7 +819,7 @@
 
         .modal-title {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: bold;
             color: #333;
             margin-bottom: 6px;
         }
@@ -680,7 +851,7 @@
             padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -691,7 +862,12 @@
                 <img src="logo.png" alt="Logo" class="app-logo" />
             </div>
             <div class="header-right">
-                <button class="nav-item" data-view="profile">Profile</button>
+                <button class="nav-item" data-view="profile" title="Profile">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
                 <button class="burger" aria-label="Menu" title="Menu">
                     <span class="bar"></span>
                 </button>
@@ -699,7 +875,7 @@
         </div>
         <div class="header-row">
             <div class="header-left">
-                <div class="greeting">Hello John</div>
+                <div class="greeting" id="greeting">Hello John, your calendar</div>
             </div>
             <div class="header-right">
                 <button class="nav-item active" data-view="calendar">Wochenplan</button>
@@ -749,15 +925,42 @@
         <div class="notes-wrapper">
             <div class="notes-card">
                 <div class="notes-title">Maßnahmen</div>
-                <div class="notes-list" id="notesList"></div>
-                <div class="notes-composer">
-                    <textarea id="noteInput" class="note-input" placeholder="Add a new note..." rows="3"></textarea>
-                    <button id="addNoteBtn" class="add-note-button" title="Add Note" aria-label="Add Note">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"/>
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                    </button>
+                <div class="notes-content">
+                    <div class="notes-sidebar">
+                        <div class="category-list">
+                            <div class="category-item active" data-category="personal">
+                                <span class="category-icon">👤</span>
+                                <span class="category-name">Personal</span>
+                            </div>
+                            <div class="category-item" data-category="work">
+                                <span class="category-icon">💼</span>
+                                <span class="category-name">Work</span>
+                            </div>
+                            <div class="category-item" data-category="free time">
+                                <span class="category-icon">🎯</span>
+                                <span class="category-name">Free Time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notes-main">
+                        <div class="notes-list" id="notesList"></div>
+                        <div class="notes-composer">
+                            <div class="composer-header">
+                                <select id="noteCategory" class="category-select">
+                                    <option value="personal">👤 Personal</option>
+                                    <option value="work">💼 Work</option>
+                                    <option value="free time">🎯 Free Time</option>
+                                </select>
+                            </div>
+                            <textarea id="noteInput" class="note-input" placeholder="Add a new note..." rows="3"></textarea>
+                            <button id="addNoteBtn" class="add-note-button" title="Add Note" aria-label="Add Note">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -817,10 +1020,10 @@
             emptyHeader.textContent = '';
             weekGrid.appendChild(emptyHeader);
 
-            // Day headers Monday..Sunday
+            // Day headers Monday..Friday
             weekDays.forEach((day) => {
                 const header = document.createElement('div');
-                header.className = 'header';
+                header.className = `header ${day.name.toLowerCase()}`;
                 header.textContent = day.name;
                 weekGrid.appendChild(header);
             });
@@ -837,10 +1040,10 @@
                 timeCell.textContent = label24;
                 weekGrid.appendChild(timeCell);
 
-                // 7 day columns for this hour
+                // 5 day columns for this hour
                 weekDays.forEach((day) => {
                     const slot = document.createElement('div');
-                    slot.className = 'slot-cell';
+                    slot.className = `slot-cell ${day.name.toLowerCase()}`;
                     slot.dataset.day = day.index;
                     slot.dataset.hour = String(hour);
 
@@ -1052,6 +1255,20 @@
             const activeTab = document.querySelector(`.nav-item[data-view="${viewName}"]`);
             if (activeTab) activeTab.classList.add('active');
 
+            // Update greeting based on current view
+            const greeting = document.getElementById('greeting');
+            if (greeting) {
+                if (viewName === 'calendar') {
+                    greeting.textContent = 'Hello John, your calendar';
+                } else if (viewName === 'notes') {
+                    greeting.textContent = 'Hello John, your notes';
+                } else if (viewName === 'export') {
+                    greeting.textContent = 'Hello John, export your data';
+                } else if (viewName === 'profile') {
+                    greeting.textContent = 'Hello John, your profile';
+                }
+            }
+
             if (viewName === 'calendar') {
                 renderCalendar();
                 if (selectedDay !== null) selectDay(selectedDay);
@@ -1079,6 +1296,7 @@
         // Notes logic
         let notes = [];
         let editingNoteId = null;
+        let selectedCategory = 'personal';
 
         async function loadNotes() {
             try {
@@ -1094,13 +1312,13 @@
             }
         }
 
-        async function addNote(text) {
+        async function addNote(text, category) {
             if (!text.trim()) return;
             try {
                 const res = await fetch(`${API_BASE}/notes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text.trim() })
+                    body: JSON.stringify({ text: text.trim(), category: category || 'personal' })
                 });
                 if (!res.ok) throw new Error('Failed to add note');
                 const data = await res.json();
@@ -1112,12 +1330,12 @@
             }
         }
 
-        async function updateNote(noteId, text) {
+        async function updateNote(noteId, text, category) {
             try {
                 const res = await fetch(`${API_BASE}/notes/${noteId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text.trim() })
+                    body: JSON.stringify({ text: text.trim(), category: category || 'personal' })
                 });
                 if (!res.ok) throw new Error('Failed to update note');
                 const data = await res.json();
@@ -1151,30 +1369,51 @@
             
             container.innerHTML = '';
             
-            if (notes.length === 0) {
+            // Filter notes by selected category
+            const filteredNotes = notes.filter(note => note.category === selectedCategory);
+            
+            if (filteredNotes.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'no-events';
-                emptyMsg.textContent = 'No notes yet. Add your first note below.';
+                emptyMsg.textContent = `No ${selectedCategory} notes yet. Add your first note below.`;
                 container.appendChild(emptyMsg);
                 return;
             }
 
-            notes.forEach(note => {
+            filteredNotes.forEach(note => {
                 const noteElement = document.createElement('div');
                 noteElement.className = 'note-item';
                 
                 if (editingNoteId === note.id) {
                     // Edit mode
+                    const editContainer = document.createElement('div');
+                    editContainer.style.display = 'flex';
+                    editContainer.style.flexDirection = 'column';
+                    editContainer.style.gap = '8px';
+                    
+                    const categorySelect = document.createElement('select');
+                    categorySelect.className = 'category-select';
+                    categorySelect.style.width = 'fit-content';
+                    categorySelect.innerHTML = `
+                        <option value="personal" ${note.category === 'personal' ? 'selected' : ''}>👤 Personal</option>
+                        <option value="work" ${note.category === 'work' ? 'selected' : ''}>💼 Work</option>
+                        <option value="free time" ${note.category === 'free time' ? 'selected' : ''}>🎯 Free Time</option>
+                    `;
+                    
                     const textarea = document.createElement('textarea');
                     textarea.className = 'note-text';
                     textarea.value = note.text;
                     textarea.rows = 3;
                     
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.style.display = 'flex';
+                    buttonContainer.style.gap = '8px';
+                    
                     const saveBtn = document.createElement('button');
                     saveBtn.className = 'note-edit';
                     saveBtn.textContent = 'Save';
                     saveBtn.onclick = () => {
-                        updateNote(note.id, textarea.value);
+                        updateNote(note.id, textarea.value, categorySelect.value);
                         editingNoteId = null;
                     };
                     
@@ -1186,9 +1425,14 @@
                         renderNotes();
                     };
                     
-                    noteElement.appendChild(textarea);
-                    noteElement.appendChild(saveBtn);
-                    noteElement.appendChild(cancelBtn);
+                    buttonContainer.appendChild(saveBtn);
+                    buttonContainer.appendChild(cancelBtn);
+                    
+                    editContainer.appendChild(categorySelect);
+                    editContainer.appendChild(textarea);
+                    editContainer.appendChild(buttonContainer);
+                    
+                    noteElement.appendChild(editContainer);
                 } else {
                     // View mode
                     const textSpan = document.createElement('span');
@@ -1217,17 +1461,46 @@
             });
         }
 
+        function switchCategory(category) {
+            selectedCategory = category;
+            
+            // Update active category in sidebar
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // Update category select in composer
+            const categorySelect = document.getElementById('noteCategory');
+            if (categorySelect) {
+                categorySelect.value = category;
+            }
+            
+            // Re-render notes
+            renderNotes();
+        }
+
         function initNotesView() {
             loadNotes();
             
+            // Set up category switching
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const category = item.dataset.category;
+                    switchCategory(category);
+                });
+            });
+            
             const noteInput = document.getElementById('noteInput');
             const addBtn = document.getElementById('addNoteBtn');
+            const categorySelect = document.getElementById('noteCategory');
             
-            if (noteInput && addBtn) {
+            if (noteInput && addBtn && categorySelect) {
                 addBtn.onclick = () => {
                     const text = noteInput.value.trim();
+                    const category = categorySelect.value;
                     if (text) {
-                        addNote(text);
+                        addNote(text, category);
                         noteInput.value = '';
                     }
                 };
@@ -1236,8 +1509,9 @@
                     if (e.key === 'Enter' && e.ctrlKey) {
                         e.preventDefault();
                         const text = noteInput.value.trim();
+                        const category = categorySelect.value;
                         if (text) {
-                            addNote(text);
+                            addNote(text, category);
                             noteInput.value = '';
                         }
                     }
