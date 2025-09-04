@@ -1625,16 +1625,39 @@
             async function submit() {
                 const text = input.value.trim();
                 if (!text) return;
+                
+                // Add user message immediately for better UX
                 const messages = loadChatMessages();
                 messages.push({ role: 'user', text });
-                
-                // Add mock AI reply that echoes the user input
-                messages.push({ role: 'assistant', text: `You said: "${text}"` });
-                
                 saveChatMessages(messages);
                 renderChatMessages(renderTargetId, messages);
-                // Try to persist to backend for consistency (best-effort)
-                postChatToBackend(text);
+                
+                // Get AI response from backend
+                try {
+                    const res = await fetch(`${API_BASE}/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'user', text })
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        const updatedMessages = data.messages || [];
+                        saveChatMessages(updatedMessages);
+                        renderChatMessages(renderTargetId, updatedMessages);
+                    } else {
+                        // Fallback: add error message
+                        messages.push({ role: 'assistant', text: 'Sorry, I encountered an error. Please try again.' });
+                        saveChatMessages(messages);
+                        renderChatMessages(renderTargetId, messages);
+                    }
+                } catch (error) {
+                    // Fallback: add error message
+                    messages.push({ role: 'assistant', text: 'Sorry, I cannot connect to the AI service. Please check if the backend is running.' });
+                    saveChatMessages(messages);
+                    renderChatMessages(renderTargetId, messages);
+                }
+                
                 input.value = '';
                 updateIcons();
             }

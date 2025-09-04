@@ -4,11 +4,21 @@ import json
 import threading
 from pathlib import Path
 from typing import Dict, List, Optional
+import os
+from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
+from groq import Groq
 
+# Load environment variables
+load_dotenv()
+
+# Initialize Groq client
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY"),
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVENTS_FILE = PROJECT_ROOT / "events.json"
@@ -152,6 +162,46 @@ def _read_chat() -> Dict[str, object]:
 def _write_chat(payload: Dict[str, object]) -> None:
     with _file_lock:
         CHAT_FILE.write_text(json.dumps(payload, indent=2))
+
+
+def get_ai_chat_completion(user_message: str) -> str:
+    """Get AI response using Groq API with context from events and notes."""
+    try:
+        # Load system prompt
+        #system_prompt_file = PROJECT_ROOT / "system_prompt.txt"
+        system_prompt = "Du beantwortest nur Fragen zum modernen Arbeiten und Hybriden Arbeiten, sowie zu den geplanten Events und Maßnahmen. Halte deine Antworten kurz und prägnant."
+        #if system_prompt_file.exists():
+        #    system_prompt = system_prompt_file.read_text()
+        
+        # Load events and notes for context
+        events_data = _read_events()
+        notes_data = _read_notes()
+        
+        # Create context string
+        context = f"""
+Momentane Events (events.json):
+{json.dumps(events_data, indent=2, ensure_ascii=False)}
+
+Momentane Maßnahmen (notes.json):
+{json.dumps(notes_data, indent=2, ensure_ascii=False)}
+
+User Input: {user_message}
+"""
+        
+        # Get AI response
+        response = client.chat.completions.create(
+            model="meta-llama/llama-4-maverick-17b-128e-instruct",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": context}
+            ],
+            temperature=0.7,
+            max_tokens=1000,
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"I apologize, but I encountered an error while processing your request: {str(e)}"
 
 
 app = FastAPI(title="Calendar Events API")
@@ -310,7 +360,15 @@ class CreateChatMessageRequest(BaseModel):
 def add_chat_message(payload: CreateChatMessageRequest) -> ChatResponse:
     state = _read_chat()
     msgs: List[dict] = state["messages"]  # type: ignore[index]
+    
+    # Add user message
     msgs.append({"role": payload.role, "text": payload.text})
+    
+    # If it's a user message, get AI response
+    if payload.role == "user":
+        ai_response = get_ai_chat_completion(payload.text)
+        msgs.append({"role": "assistant", "text": ai_response})
+    
     state["messages"] = msgs
     _write_chat(state)
     return ChatResponse(messages=[ChatMessage(**m) for m in msgs])

@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # load system prompt from file
-with open("system_prompt.txt", "r") as file:
-    system_prompt = file.read()
+with open("system_prompt_event.txt", "r") as file:
+    system_prompt_event = file.read()
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY"),
@@ -71,10 +71,10 @@ def get_chat_completion(message_user, instructions):
         #model="moonshotai/kimi-k2-instruct", 
         model= "meta-llama/llama-4-maverick-17b-128e-instruct",
         messages=[
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": system_prompt_event},
             {
                 "role": "user", 
-                "content": instructions + "\n" + message_user,
+                "content": instructions_event + "\n" + message_user,
             },
         ],
         temperature=0.0,
@@ -136,7 +136,7 @@ def main():
     pd = pandas.read_csv('table.csv', sep=',')
     print(pd.head())
 
-    instructions = open("instructions.txt", "r").read()
+    instructions_event = open("instructions_event.txt", "r").read()
     #message_user = "Explain the importance of fast language models"
 
     entire_data = ""
@@ -151,7 +151,7 @@ def main():
         #message_user = f"{column_name} \n {column_values}"
         entire_data += f"{column_name} \n {column_values}"
         
-    chat_completion = get_chat_completion(entire_data, instructions)
+    chat_completion = get_chat_completion(entire_data, instructions_event)
     #print(chat_completion)
 
     # write response into events.json file
