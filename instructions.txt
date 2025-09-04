@@ -1,0 +1,28 @@
+Given the following survey data, provide advice on how to improve the team-collaboration.
+You must answer in JSON format in the following format: 
+    {
+        "Wednesday": [
+            {
+            "title": "Wöchentliches Team Meeting",
+            "description": "To improve ",
+            "hour": 10,
+            "duration": 3
+            }
+        ],
+        "Monday": [
+            {
+            "title": "ajkhfw",
+            "description": "awfawf",
+            "hour": 6,
+            "duration": 4
+            }
+        ],
+        "Thursday": [
+            {
+            "title": "kh",
+            "description": "klj",
+            "hour": 9,
+            "duration": 5
+            }
+        ],
+    }

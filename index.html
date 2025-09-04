@@ -22,24 +22,95 @@
 
         .container {
             width: 100vw;
-            height: calc(100vh - 56px);
+            height: calc(100vh - 112px);
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Generic card */
+        .card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
         }
 
         /* Top navigation bar */
         .top-nav {
             width: 100vw;
-            height: 56px;
+            height: 112px;
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
             padding: 0 12px;
-            gap: 8px;
+            gap: 6px;
         }
+
+        .header-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-logo {
+            height: 36px;
+            border-radius: 6px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .burger {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(102, 126, 234, 0.35);
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .burger:hover { background: rgba(102, 126, 234, 0.12); }
+
+        .burger .bar {
+            width: 18px;
+            height: 2px;
+            background: #333;
+            position: relative;
+        }
+
+        .burger .bar::before,
+        .burger .bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 18px;
+            height: 2px;
+            background: #333;
+        }
+
+        .burger .bar::before { top: -6px; }
+        .burger .bar::after { top: 6px; }
 
         .nav-item {
             appearance: none;
@@ -71,17 +142,39 @@
         .calendar-section {
             flex: 2;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             flex-direction: column;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            position: relative;
         }
 
         .notes-section {
             flex: 1;
-            padding: 20px;
+            padding: 0 0;
             display: flex;
             flex-direction: column;
+        }
+
+        .calendar-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .events-card {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .calendar-header {
@@ -270,7 +363,6 @@
             }
             
             .calendar-section {
-                border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.2);
                 flex: 1.5;
             }
@@ -287,7 +379,7 @@
         /* Notes view styles */
         .notes-wrapper {
             width: 100%;
-            height: calc(100vh - 56px);
+            height: calc(100vh - 112px);
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -368,19 +460,95 @@
         .note-delete:hover {
             background: #ff3742;
         }
+        /* Modal for calendar event details */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            width: min(440px, 92vw);
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+            padding: 16px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .modal-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .modal-description {
+            font-size: 14px;
+            color: #444;
+            white-space: pre-wrap;
+        }
+
+        .modal-actions {
+            margin-top: 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            appearance: none;
+            border: 1px solid #e0e0e0;
+            background: #f8f9fb;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="top-nav">
-        <button class="nav-item active" data-view="calendar">Calendar</button>
-        <button class="nav-item" data-view="notes">Notes</button>
-        <button class="nav-item" data-view="export">Export</button>
-        <button class="nav-item" data-view="profile">Profile</button>
+        <div class="header-row">
+            <div class="header-left">
+                <img src="logo.JPG" alt="Logo" class="app-logo" />
+            </div>
+            <div class="header-right">
+                <button class="nav-item" data-view="profile">Profile</button>
+                <button class="burger" aria-label="Menu" title="Menu">
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+        <div class="header-row">
+            <div class="header-left">
+                <div class="greeting">Hello John</div>
+            </div>
+            <div class="header-right">
+                <button class="nav-item active" data-view="calendar">Calendar</button>
+                <button class="nav-item" data-view="notes">Notes</button>
+                
+            </div>
+        </div>
     </div>
 
     <div id="view-calendar" class="view active">
         <div class="container">
             <div class="calendar-section">
+                <div class="calendar-actions">
+                    <button id="calendarExportBtn" class="nav-item" title="Export">Export</button>
+                </div>
                 <div class="calendar-header">
                     <div class="week-year" id="weekYear"></div>
                 </div>
@@ -388,10 +556,12 @@
             </div>
             
             <div class="notes-section">
-                <div class="notes-header">Events</div>
-                <div class="selected-date" id="selectedDate">Select a day to view events</div>
-                <div class="events-list" id="eventsList">
-                    <div class="no-events">Click on a day to add an event</div>
+                <div class="events-card">
+                    <div class="notes-header">Events</div>
+                    <div class="selected-date" id="selectedDate">Select a day to view events</div>
+                    <div class="events-list" id="eventsList">
+                        <div class="no-events">Click on a day to add an event</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -564,7 +734,6 @@
                         <div class="event-time">${ampm} - ${endAmpm} (${duration}h)</div>
                         <div class="event-title">${event.title}</div>
                         ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
-                        <button class="delete-button" onclick="deleteEvent(${originalIndex}); event.stopPropagation();">Delete Event</button>
                     `;
                     
                     eventElement.addEventListener('click', () => {
@@ -580,7 +749,7 @@
         function selectEvent(dayIndex, eventIndex) {
             selectedDay = dayIndex;
             selectedEventIndex = eventIndex;
-            selectDay(dayIndex);
+            openEventModal(dayIndex, eventIndex);
         }
 
         async function deleteEvent(eventIndex) {
@@ -823,6 +992,67 @@
             const notes = await fetchNotes();
             renderNotes(notes);
         }
+
+        // Export button inside calendar
+        const calendarExportBtn = document.getElementById('calendarExportBtn');
+        if (calendarExportBtn) {
+            calendarExportBtn.addEventListener('click', () => switchView('export'));
+        }
+
+        // Modal structure
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        modalOverlay.innerHTML = `
+            <div class="modal" role="dialog" aria-modal="true">
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-subtitle" id="modalTime"></div>
+                <div class="modal-description" id="modalDescription"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="closeModalBtn">Close</button>
+                    <button class="delete-button" id="deleteEventBtn">Delete</button>
+                </div>
+            </div>`;
+        document.body.appendChild(modalOverlay);
+
+        let modalCtx = { dayIndex: null, eventIndex: null };
+
+        function openEventModal(dayIndex, eventIndex) {
+            const dayKey = formatDayKey(dayIndex);
+            const dayEvents = events[dayKey] || [];
+            const ev = dayEvents[eventIndex];
+            if (!ev) return;
+
+            const hour = Number(ev.hour);
+            const duration = ev.duration || 1;
+            const start = `${String(hour).padStart(2,'0')}:00`;
+            const end = `${String(hour + duration).padStart(2,'0')}:00`;
+
+            document.getElementById('modalTitle').textContent = ev.title || 'Event';
+            document.getElementById('modalTime').textContent = `${formatDisplayDay(dayIndex)} • ${start} - ${end} (${duration}h)`;
+            document.getElementById('modalDescription').textContent = ev.description || '';
+
+            modalCtx = { dayIndex, eventIndex };
+            modalOverlay.style.display = 'flex';
+        }
+
+        function closeEventModal() {
+            modalOverlay.style.display = 'none';
+            modalCtx = { dayIndex: null, eventIndex: null };
+        }
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeEventModal();
+        });
+        modalOverlay.querySelector('#closeModalBtn').addEventListener('click', closeEventModal);
+        modalOverlay.querySelector('#deleteEventBtn').addEventListener('click', async () => {
+            if (modalCtx.dayIndex === null || modalCtx.eventIndex === null) return;
+            // Use existing deleteEvent helper
+            const prevSelectedDay = selectedDay;
+            selectedDay = modalCtx.dayIndex;
+            await deleteEvent(modalCtx.eventIndex);
+            selectedDay = prevSelectedDay;
+            closeEventModal();
+        });
     </script>
 </body>
 </html>
