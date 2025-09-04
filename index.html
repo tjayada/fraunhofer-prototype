@@ -876,6 +876,166 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        /* Massnahmen specific styles */
+        .massnahme-item {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .massnahme-title-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .massnahme-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-hoch {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-mittel {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-niedrig {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .massnahme-description {
+            margin-bottom: 12px;
+            line-height: 1.5;
+            color: #666;
+            white-space: pre-wrap;
+        }
+
+        .massnahme-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .edit-btn:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .accept-btn:hover {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        .decline-btn:hover {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        /* Edit form styles */
+        .massnahme-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .edit-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .edit-field label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .edit-field input,
+        .edit-field textarea,
+        .edit-field select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .edit-field textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .save-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #45a049;
+        }
+
+        .cancel-btn {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .cancel-btn:hover {
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body>
@@ -951,17 +1111,13 @@
                 <div class="notes-content">
                     <div class="notes-sidebar">
                         <div class="category-list">
-                            <div class="category-item active" data-category="personal">
-                                <span class="category-icon">👤</span>
-                                <span class="category-name">Personal</span>
+                            <div class="category-item active" data-category="einmalige_massnahmen">
+                                <span class="category-icon">⚡</span>
+                                <span class="category-name">Einmalige Maßnahmen</span>
                             </div>
-                            <div class="category-item" data-category="work">
-                                <span class="category-icon">💼</span>
-                                <span class="category-name">Work</span>
-                            </div>
-                            <div class="category-item" data-category="free time">
-                                <span class="category-icon">🎯</span>
-                                <span class="category-name">Free Time</span>
+                            <div class="category-item" data-category="arbeitsplatz">
+                                <span class="category-icon">🏢</span>
+                                <span class="category-name">Arbeitsplatz</span>
                             </div>
                         </div>
                     </div>
@@ -1312,7 +1468,222 @@
         // Notes logic
         let notes = [];
         let editingNoteId = null;
-        let selectedCategory = 'personal';
+        let selectedCategory = 'einmalige_massnahmen';
+        
+        // Massnahmen logic
+        let massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [] };
+
+        async function loadMassnahmen() {
+            try {
+                const res = await fetch(`${API_BASE}/massnahmen`);
+                if (!res.ok) throw new Error('Failed to load massnahmen');
+                const data = await res.json();
+                massnahmen = {
+                    einmalige_massnahmen: data.einmalige_massnahmen || [],
+                    arbeitsplatz: data.arbeitsplatz || []
+                };
+                renderMassnahmen();
+            } catch (e) {
+                console.warn('Could not load massnahmen from backend:', e);
+                massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [] };
+                renderMassnahmen();
+            }
+        }
+
+        function renderMassnahmen() {
+            const container = document.getElementById('notesList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Get massnahmen for selected category
+            const categoryMassnahmen = massnahmen[selectedCategory] || [];
+            
+            if (categoryMassnahmen.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'no-events';
+                emptyMsg.textContent = `No ${selectedCategory} massnahmen yet. Run the AI analysis to generate massnahmen.`;
+                container.appendChild(emptyMsg);
+                return;
+            }
+
+            categoryMassnahmen.forEach((massnahme, index) => {
+                const massnahmeElement = document.createElement('div');
+                massnahmeElement.className = 'note-item massnahme-item';
+                massnahmeElement.dataset.index = index;
+                
+                // Title section
+                const titleSection = document.createElement('div');
+                titleSection.className = 'massnahme-title-section';
+                
+                const titleElement = document.createElement('div');
+                titleElement.className = 'note-title massnahme-title';
+                titleElement.textContent = massnahme.title;
+                
+                // Priority badge
+                const priorityElement = document.createElement('div');
+                priorityElement.className = `priority-badge priority-${massnahme.priority}`;
+                priorityElement.textContent = massnahme.priority.toUpperCase();
+                
+                titleSection.appendChild(titleElement);
+                titleSection.appendChild(priorityElement);
+                
+                // Description section with better spacing
+                const descriptionElement = document.createElement('div');
+                descriptionElement.className = 'note-text massnahme-description';
+                descriptionElement.textContent = massnahme.description;
+                
+                // Action buttons
+                const actionsElement = document.createElement('div');
+                actionsElement.className = 'massnahme-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'action-btn edit-btn';
+                editBtn.innerHTML = '✏️';
+                editBtn.title = 'Edit';
+                editBtn.onclick = () => editMassnahme(index);
+                
+                const acceptBtn = document.createElement('button');
+                acceptBtn.className = 'action-btn accept-btn';
+                acceptBtn.innerHTML = '✅';
+                acceptBtn.title = 'Accept';
+                acceptBtn.onclick = () => acceptMassnahme(index);
+                
+                const declineBtn = document.createElement('button');
+                declineBtn.className = 'action-btn decline-btn';
+                declineBtn.innerHTML = '❌';
+                declineBtn.title = 'Decline';
+                declineBtn.onclick = () => declineMassnahme(index);
+                
+                actionsElement.appendChild(editBtn);
+                actionsElement.appendChild(acceptBtn);
+                actionsElement.appendChild(declineBtn);
+                
+                massnahmeElement.appendChild(titleSection);
+                massnahmeElement.appendChild(descriptionElement);
+                massnahmeElement.appendChild(actionsElement);
+                
+                container.appendChild(massnahmeElement);
+            });
+        }
+
+        // Massnahmen action functions
+        function editMassnahme(index) {
+            const categoryMassnahmen = massnahmen[selectedCategory] || [];
+            const massnahme = categoryMassnahmen[index];
+            if (!massnahme) return;
+
+            const massnahmeElement = document.querySelector(`[data-index="${index}"]`);
+            if (!massnahmeElement) return;
+
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'massnahme-edit-form';
+            editForm.innerHTML = `
+                <div class="edit-field">
+                    <label>Title:</label>
+                    <input type="text" class="edit-title" value="${massnahme.title}" />
+                </div>
+                <div class="edit-field">
+                    <label>Description:</label>
+                    <textarea class="edit-description">${massnahme.description}</textarea>
+                </div>
+                <div class="edit-field">
+                    <label>Priority:</label>
+                    <select class="edit-priority">
+                        <option value="hoch" ${massnahme.priority === 'hoch' ? 'selected' : ''}>Hoch</option>
+                        <option value="mittel" ${massnahme.priority === 'mittel' ? 'selected' : ''}>Mittel</option>
+                        <option value="niedrig" ${massnahme.priority === 'niedrig' ? 'selected' : ''}>Niedrig</option>
+                    </select>
+                </div>
+                <div class="edit-actions">
+                    <button class="save-btn" onclick="saveMassnahme(${index})">Save</button>
+                    <button class="cancel-btn" onclick="cancelEditMassnahme(${index})">Cancel</button>
+                </div>
+            `;
+
+            // Replace content with edit form
+            massnahmeElement.innerHTML = '';
+            massnahmeElement.appendChild(editForm);
+        }
+
+        async function saveMassnahme(index) {
+            const massnahmeElement = document.querySelector(`[data-index="${index}"]`);
+            if (!massnahmeElement) return;
+
+            const titleInput = massnahmeElement.querySelector('.edit-title');
+            const descriptionInput = massnahmeElement.querySelector('.edit-description');
+            const prioritySelect = massnahmeElement.querySelector('.edit-priority');
+
+            const updatedMassnahme = {
+                title: titleInput.value.trim(),
+                description: descriptionInput.value.trim(),
+                priority: prioritySelect.value
+            };
+
+            if (!updatedMassnahme.title) {
+                alert('Title is required');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/massnahmen/${selectedCategory}/${index}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedMassnahme)
+                });
+
+                if (!res.ok) throw new Error('Failed to update massnahme');
+
+                const data = await res.json();
+                massnahmen = {
+                    einmalige_massnahmen: data.einmalige_massnahmen || [],
+                    arbeitsplatz: data.arbeitsplatz || []
+                };
+                renderMassnahmen();
+            } catch (e) {
+                console.error('Error updating massnahme:', e);
+                alert('Failed to update massnahme');
+            }
+        }
+
+        function cancelEditMassnahme(index) {
+            renderMassnahmen();
+        }
+
+        async function acceptMassnahme(index) {
+            if (confirm('Are you sure you want to accept this massnahme?')) {
+                // For now, we'll just remove it from the list
+                // In a real app, you might want to move it to an "accepted" category
+                await deleteMassnahme(index);
+            }
+        }
+
+        async function declineMassnahme(index) {
+            if (confirm('Are you sure you want to decline this massnahme?')) {
+                await deleteMassnahme(index);
+            }
+        }
+
+        async function deleteMassnahme(index) {
+            try {
+                const res = await fetch(`${API_BASE}/massnahmen/${selectedCategory}/${index}`, {
+                    method: 'DELETE'
+                });
+
+                if (!res.ok) throw new Error('Failed to delete massnahme');
+
+                const data = await res.json();
+                massnahmen = {
+                    einmalige_massnahmen: data.einmalige_massnahmen || [],
+                    arbeitsplatz: data.arbeitsplatz || []
+                };
+                renderMassnahmen();
+            } catch (e) {
+                console.error('Error deleting massnahme:', e);
+                alert('Failed to delete massnahme');
+            }
+        }
 
         async function loadNotes() {
             try {
@@ -1334,7 +1705,7 @@
                 const res = await fetch(`${API_BASE}/notes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text.trim(), category: category || 'personal' })
+                    body: JSON.stringify({ text: text.trim(), category: category || 'einmalige_massnahmen' })
                 });
                 if (!res.ok) throw new Error('Failed to add note');
                 const data = await res.json();
@@ -1351,7 +1722,7 @@
                 const res = await fetch(`${API_BASE}/notes/${noteId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text.trim(), category: category || 'personal' })
+                    body: JSON.stringify({ text: text.trim(), category: category || 'einmalige_massnahmen' })
                 });
                 if (!res.ok) throw new Error('Failed to update note');
                 const data = await res.json();
@@ -1411,9 +1782,8 @@
                     categorySelect.className = 'category-select';
                     categorySelect.style.width = 'fit-content';
                     categorySelect.innerHTML = `
-                        <option value="personal" ${note.category === 'personal' ? 'selected' : ''}>👤 Personal</option>
-                        <option value="work" ${note.category === 'work' ? 'selected' : ''}>💼 Work</option>
-                        <option value="free time" ${note.category === 'free time' ? 'selected' : ''}>🎯 Free Time</option>
+                        <option value="einmalige_massnahmen" ${note.category === 'einmalige_massnahmen' ? 'selected' : ''}>⚡ Einmalige Maßnahmen</option>
+                        <option value="arbeitsplatz" ${note.category === 'arbeitsplatz' ? 'selected' : ''}>🏢 Arbeitsplatz</option>
                     `;
                     
                     const textarea = document.createElement('textarea');
@@ -1498,12 +1868,17 @@
             });
             document.querySelector(`[data-category="${category}"]`).classList.add('active');
             
-            // Re-render notes
-            renderNotes();
+            // Re-render based on whether we have massnahmen data or notes
+            if (massnahmen.einmalige_massnahmen.length > 0 || massnahmen.arbeitsplatz.length > 0) {
+                renderMassnahmen();
+            } else {
+                renderNotes();
+            }
         }
 
         function initNotesView() {
             loadNotes();
+            loadMassnahmen();
             
             // Set up category switching
             document.querySelectorAll('.category-item').forEach(item => {
@@ -1538,9 +1913,10 @@
             }
         }
 
-        // Initialize notes when page loads
+        // Initialize notes and massnahmen when page loads
         (async () => {
             await loadNotes();
+            await loadMassnahmen();
         })();
 
         // Chat logic for calendar sidebar (frontend-only placeholder storage)

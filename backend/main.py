@@ -24,6 +24,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVENTS_FILE = PROJECT_ROOT / "events.json"
 NOTES_FILE = PROJECT_ROOT / "notes.json"
 CHAT_FILE = PROJECT_ROOT / "messages.json"
+MASSNAHMEN_FILE = PROJECT_ROOT / "massnahmen.json"
 
 
 class Event(BaseModel):
@@ -139,6 +140,18 @@ class ChatResponse(BaseModel):
     messages: List[ChatMessage]
 
 
+# Massnahmen models
+class Massnahme(BaseModel):
+    title: str
+    description: str
+    priority: str = Field(..., pattern=r"^(hoch|mittel|niedrig)$")
+
+
+class MassnahmenResponse(BaseModel):
+    einmalige_massnahmen: List[Massnahme]
+    arbeitsplatz: List[Massnahme]
+
+
 def _read_chat() -> Dict[str, object]:
     _ensure_file_exists()
     with _file_lock:
@@ -162,6 +175,34 @@ def _read_chat() -> Dict[str, object]:
 def _write_chat(payload: Dict[str, object]) -> None:
     with _file_lock:
         CHAT_FILE.write_text(json.dumps(payload, indent=2))
+
+
+# Massnahmen helpers
+def _read_massnahmen() -> Dict[str, List[dict]]:
+    _ensure_file_exists()
+    with _file_lock:
+        try:
+            if not MASSNAHMEN_FILE.exists():
+                return {"einmalige_massnahmen": [], "arbeitsplatz": []}
+            raw = MASSNAHMEN_FILE.read_text()
+            data = json.loads(raw) if raw.strip() else {}
+            if not isinstance(data, dict):
+                return {"einmalige_massnahmen": [], "arbeitsplatz": []}
+            
+            # Ensure both categories exist
+            result = {
+                "einmalige_massnahmen": data.get("einmalige_massnahmen", []),
+                "arbeitsplatz": data.get("arbeitsplatz", [])
+            }
+            
+            # Validate that each category is a list
+            for category in result:
+                if not isinstance(result[category], list):
+                    result[category] = []
+            
+            return result
+        except Exception:
+            return {"einmalige_massnahmen": [], "arbeitsplatz": []}
 
 
 def get_ai_chat_completion(user_message: str) -> str:
@@ -372,4 +413,82 @@ def add_chat_message(payload: CreateChatMessageRequest) -> ChatResponse:
     state["messages"] = msgs
     _write_chat(state)
     return ChatResponse(messages=[ChatMessage(**m) for m in msgs])
+
+
+# Massnahmen endpoints
+@app.get("/massnahmen", response_model=MassnahmenResponse)
+def get_massnahmen() -> MassnahmenResponse:
+    data = _read_massnahmen()
+    
+    # Convert to Massnahme objects for validation
+    einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
+    arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    
+    return MassnahmenResponse(
+        einmalige_massnahmen=einmalige_massnahmen,
+        arbeitsplatz=arbeitsplatz
+    )
+
+
+def _write_massnahmen(data: Dict[str, List[dict]]) -> None:
+    with _file_lock:
+        MASSNAHMEN_FILE.write_text(json.dumps(data, indent=2))
+
+
+class UpdateMassnahmeRequest(BaseModel):
+    title: str
+    description: str
+    priority: str = Field(..., pattern=r"^(hoch|mittel|niedrig)$")
+
+
+@app.put("/massnahmen/{category}/{index}", response_model=MassnahmenResponse)
+def update_massnahme(category: str, index: int, payload: UpdateMassnahmeRequest) -> MassnahmenResponse:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+        raise HTTPException(status_code=400, detail="Invalid category")
+    
+    data = _read_massnahmen()
+    category_items = data.get(category, [])
+    
+    if index < 0 or index >= len(category_items):
+        raise HTTPException(status_code=404, detail="Massnahme not found")
+    
+    # Update the massnahme
+    category_items[index] = payload.dict()
+    data[category] = category_items
+    _write_massnahmen(data)
+    
+    # Return updated data
+    einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
+    arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    
+    return MassnahmenResponse(
+        einmalige_massnahmen=einmalige_massnahmen,
+        arbeitsplatz=arbeitsplatz
+    )
+
+
+@app.delete("/massnahmen/{category}/{index}", response_model=MassnahmenResponse)
+def delete_massnahme(category: str, index: int) -> MassnahmenResponse:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+        raise HTTPException(status_code=400, detail="Invalid category")
+    
+    data = _read_massnahmen()
+    category_items = data.get(category, [])
+    
+    if index < 0 or index >= len(category_items):
+        raise HTTPException(status_code=404, detail="Massnahme not found")
+    
+    # Remove the massnahme
+    del category_items[index]
+    data[category] = category_items
+    _write_massnahmen(data)
+    
+    # Return updated data
+    einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
+    arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    
+    return MassnahmenResponse(
+        einmalige_massnahmen=einmalige_massnahmen,
+        arbeitsplatz=arbeitsplatz
+    )
 

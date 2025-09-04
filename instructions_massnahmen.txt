@@ -1,0 +1,20 @@
+Gebe mit den folgenden Umfrage Daten konkrete Maßnahmen um die Zusammenarbeit im Team zu erhöhen.
+Deine Antwort muss immer in JSON Format ausgegeben werden, welche die "Kategorie" der Maßnahme (entweder "einmalige_massnahmen" oder "arbeitsplatz"), 
+den "title" der Maßnahme, die "description" der Maßnahme, sowie die "priority" der Maßnahme (hoch, mittel, niedrig) enthält.
+JSON Format Beispiel : 
+    {
+        "einmalige_massnahmen": [
+            {
+            "title": "Team-Building Workshop",
+            "description": "Ein ganztägiger Workshop zur Stärkung der Teamdynamik und Kommunikation. Basierend auf den Umfrageergebnissen zeigt sich, dass die Teamzusammenarbeit verbessert werden kann.",
+            "priority": "hoch"
+            }
+        ],
+        "arbeitsplatz": [
+            {
+            "title": "Flexible Arbeitsplatzgestaltung",
+            "description": "Einführung von Multispaces und flexiblen Arbeitsplätzen im Büro, um sowohl konzentriertes Arbeiten als auch Kommunikation zu ermöglichen.",
+            "priority": "mittel"
+            }
+        ]
+    }

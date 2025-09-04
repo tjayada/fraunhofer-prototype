@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # load system prompt from file
-with open("system_prompt_event.txt", "r") as file:
-    system_prompt_event = file.read()
+with open("system_prompt_massnahmen.txt", "r") as file:
+    system_prompt_massnahmen = file.read()
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY"),
@@ -47,34 +47,32 @@ def load_survey_data(url):
 
 
 
-def get_chat_completion(message_user, instructions_event):
+def get_chat_completion(message_user, instructions):
     
-    class Activity(BaseModel):
+    class Massnahme(BaseModel):
         title: str
         description: str
-        hour: int
-        duration: int
+        priority: Literal["hoch", "mittel", "niedrig"]
 
         class Config:
             extra = 'forbid'  # Prevent extra fields
             validate_assignment = True  # Validate during assignment
             json_schema_extra = {
-                "required": ["title", "description", "hour", "duration"]
+                "required": ["title", "description", "priority"]
             }
     
-    class WeeklyPlan(BaseModel):
-        # This will be a dictionary with day names as keys and lists of activities as values
-        # We'll use a more flexible approach for validation
+    class MassnahmenPlan(BaseModel):
+        # This will be a dictionary with category names as keys and lists of massnahmen as values
         pass
 
     response = client.chat.completions.create(
         #model="moonshotai/kimi-k2-instruct", 
         model= "meta-llama/llama-4-maverick-17b-128e-instruct",
         messages=[
-            {"role": "system", "content": system_prompt_event},
+            {"role": "system", "content": system_prompt_massnahmen},
             {
                 "role": "user", 
-                "content": instructions_event + "\n" + message_user,
+                "content": instructions + "\n" + message_user,
             },
         ],
         temperature=0.0,
@@ -86,17 +84,12 @@ def get_chat_completion(message_user, instructions_event):
         response_format={
             "type": "json_schema",
             "json_schema": {
-                "name": "weekly_plan", 
+                "name": "massnahmen_plan", 
                 "schema": {
                     "type": "object",
                     "properties": {
-                        "Montag": {"type": "array", "items": Activity.model_json_schema()},
-                        "Dienstag": {"type": "array", "items": Activity.model_json_schema()},
-                        "Mittwoch": {"type": "array", "items": Activity.model_json_schema()},
-                        "Donnerstag": {"type": "array", "items": Activity.model_json_schema()},
-                        "Freitag": {"type": "array", "items": Activity.model_json_schema()},
-                        "Samstag": {"type": "array", "items": Activity.model_json_schema()},
-                        "Sonntag": {"type": "array", "items": Activity.model_json_schema()}
+                        "einmalige_massnahmen": {"type": "array", "items": Massnahme.model_json_schema()},
+                        "arbeitsplatz": {"type": "array", "items": Massnahme.model_json_schema()}
                     },
                     "additionalProperties": True
                 }
@@ -110,18 +103,18 @@ def get_chat_completion(message_user, instructions_event):
     # Parse the JSON response
     response_data = json.loads(response.choices[0].message.content)
     
-    # Validate each activity in each day
+    # Validate each massnahme in each category
     validated_plan = {}
-    for day, activities in response_data.items():
-        validated_activities = []
-        for activity_data in activities:
+    for category, massnahmen in response_data.items():
+        validated_massnahmen = []
+        for massnahme_data in massnahmen:
             try:
-                validated_activity = Activity.model_validate(activity_data)
-                validated_activities.append(validated_activity.model_dump())
+                validated_massnahme = Massnahme.model_validate(massnahme_data)
+                validated_massnahmen.append(validated_massnahme.model_dump())
             except Exception as e:
-                print(f"Error validating activity for {day}: {e}")
-                print(f"Activity data: {activity_data}")
-        validated_plan[day] = validated_activities
+                print(f"Error validating massnahme for {category}: {e}")
+                print(f"Massnahme data: {massnahme_data}")
+        validated_plan[category] = validated_massnahmen
     
     print(json.dumps(validated_plan, indent=2))
     return validated_plan
@@ -136,7 +129,7 @@ def main():
     pd = pandas.read_csv('table.csv', sep=',')
     print(pd.head())
 
-    instructions_event = open("instructions_event.txt", "r").read()
+    instructions_massnahmen = open("instructions_massnahmen.txt", "r").read()
     #message_user = "Explain the importance of fast language models"
 
     entire_data = ""
@@ -151,15 +144,14 @@ def main():
         #message_user = f"{column_name} \n {column_values}"
         entire_data += f"{column_name} \n {column_values}"
         
-    chat_completion = get_chat_completion(entire_data, instructions_event)
+    chat_completion = get_chat_completion(entire_data, instructions_massnahmen)
     #print(chat_completion)
 
-    # write response into events.json file
-    with open('events.json', 'w') as file:
+    # write response into massnahmen.json file
+    with open('massnahmen.json', 'w') as file:
         json.dump(chat_completion, file)
 
 
 
 if __name__ == "__main__":
     main()
-
