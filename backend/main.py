@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field, validator
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVENTS_FILE = PROJECT_ROOT / "events.json"
 NOTES_FILE = PROJECT_ROOT / "notes.json"
+CHAT_FILE = PROJECT_ROOT / "messages.json"
 
 
 class Event(BaseModel):
@@ -49,6 +50,10 @@ def _ensure_file_exists() -> None:
         with _file_lock:
             if not NOTES_FILE.exists():
                 NOTES_FILE.write_text(json.dumps({"notes": [], "next_id": 1}, indent=2))
+    if not CHAT_FILE.exists():
+        with _file_lock:
+            if not CHAT_FILE.exists():
+                CHAT_FILE.write_text(json.dumps({"messages": []}, indent=2))
 
 
 def _read_events() -> Dict[str, List[dict]]:
@@ -110,12 +115,47 @@ def _write_notes(payload: Dict[str, object]) -> None:
         NOTES_FILE.write_text(json.dumps(payload, indent=2))
 
 
+# Chat models and helpers
+class ChatMessage(BaseModel):
+    role: str = Field(..., pattern=r"^(user|assistant)$")
+    text: str = Field("", max_length=10000)
+
+
+class ChatResponse(BaseModel):
+    messages: List[ChatMessage]
+
+
+def _read_chat() -> Dict[str, object]:
+    _ensure_file_exists()
+    with _file_lock:
+        try:
+            raw = CHAT_FILE.read_text()
+            data = json.loads(raw) if raw.strip() else {"messages": []}
+            if not isinstance(data, dict):
+                return {"messages": []}
+            msgs = data.get("messages", [])
+            if not isinstance(msgs, list):
+                msgs = []
+            normalized: List[dict] = []
+            for item in msgs:
+                if isinstance(item, dict) and "role" in item and "text" in item:
+                    normalized.append({"role": str(item["role"]), "text": str(item["text"])})
+            return {"messages": normalized}
+        except Exception:
+            return {"messages": []}
+
+
+def _write_chat(payload: Dict[str, object]) -> None:
+    with _file_lock:
+        CHAT_FILE.write_text(json.dumps(payload, indent=2))
+
+
 app = FastAPI(title="Calendar Events API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # local file:// or any origin
-    allow_credentials=True,
+    allow_origins=["*"],  # allow all origins, including file:// via wildcard
+    allow_credentials=False,  # must be False when allow_origins is "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -244,4 +284,27 @@ def delete_note(note_id: int) -> NotesResponse:
     state["notes"] = filtered
     _write_notes(state)
     return NotesResponse(notes=[Note(**n) for n in filtered])
+
+
+# Chat endpoints
+@app.get("/chat", response_model=ChatResponse)
+def get_chat() -> ChatResponse:
+    state = _read_chat()
+    msgs = [ChatMessage(**m) for m in state["messages"]]  # type: ignore[index]
+    return ChatResponse(messages=msgs)
+
+
+class CreateChatMessageRequest(BaseModel):
+    role: str = Field(..., pattern=r"^(user|assistant)$")
+    text: str = Field("", max_length=10000)
+
+
+@app.post("/chat", response_model=ChatResponse)
+def add_chat_message(payload: CreateChatMessageRequest) -> ChatResponse:
+    state = _read_chat()
+    msgs: List[dict] = state["messages"]  # type: ignore[index]
+    msgs.append({"role": payload.role, "text": payload.text})
+    state["messages"] = msgs
+    _write_chat(state)
+    return ChatResponse(messages=[ChatMessage(**m) for m in msgs])
 

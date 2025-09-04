@@ -79,9 +79,21 @@ def main():
     print(pd.head())
 
     instructions = open("instructions.txt", "r").read()
-    #message_user = "Explain the importance of fast language models"
-    #chat_completion = get_chat_completion(message_user, instructions)
-    #print(chat_completion)
+    message_user = "Explain the importance of fast language models"
+
+
+    for i in range(len(pd.columns)):
+        column_name = pd.iloc[:, i].name
+        column_values = pd.iloc[:, i].values
+        
+        print(column_name)
+        print(column_values)
+        print("\n") 
+
+        message_user = f"{column_name} \n {column_values}"
+        
+        chat_completion = get_chat_completion(message_user, instructions)
+        print(chat_completion)
 
 
 
