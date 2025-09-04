@@ -24,8 +24,7 @@
         .container {
             width: 100vw;
             height: calc(100vh - 142px);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: transparent;
             display: flex;
             padding: 20px;
             gap: 20px;
@@ -472,6 +471,7 @@
             justify-content: center;
             align-items: flex-start;
             padding: 20px;
+            background: transparent;
         }
 
         .notes-card {
@@ -613,18 +613,13 @@
         /* Notes specific styles */
         .notes-composer {
             display: flex;
-            flex-direction: column;
             gap: 8px;
+            align-items: flex-end;
             margin-top: 12px;
             padding: 12px;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             background: rgba(255,255,255,0.9);
-        }
-
-        .composer-header {
-            display: flex;
-            justify-content: flex-start;
         }
 
         .category-select {
@@ -945,13 +940,6 @@
                     <div class="notes-main">
                         <div class="notes-list" id="notesList"></div>
                         <div class="notes-composer">
-                            <div class="composer-header">
-                                <select id="noteCategory" class="category-select">
-                                    <option value="personal">👤 Personal</option>
-                                    <option value="work">💼 Work</option>
-                                    <option value="free time">🎯 Free Time</option>
-                                </select>
-                            </div>
                             <textarea id="noteInput" class="note-input" placeholder="Add a new note..." rows="3"></textarea>
                             <button id="addNoteBtn" class="add-note-button" title="Add Note" aria-label="Add Note">
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -968,18 +956,18 @@
 
     <div id="view-export" class="view">
         <div class="container" style="justify-content:center; align-items:center;">
-            <div style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px; background: rgba(255,255,255,0.85);">
-                <div style="font-size: 22px; font-weight: 700; color: #333; text-align:center;">Exportieren</div>
-                <div style="margin-top: 8px; color:#666; text-align:center;">This section is coming soon.</div>
+            <div class="card" style="padding: 24px; text-align: center;">
+                <div style="font-size: 22px; font-weight: 700; color: #333;">Exportieren</div>
+                <div style="margin-top: 8px; color:#666;">This section is coming soon.</div>
             </div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
         <div class="container" style="justify-content:center; align-items:center;">
-            <div style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 24px; background: rgba(255,255,255,0.85);">
-                <div style="font-size: 22px; font-weight: 700; color: #333; text-align:center;">Profile</div>
-                <div style="margin-top: 8px; color:#666; text-align:center;">This section is coming soon.</div>
+            <div class="card" style="padding: 24px; text-align: center;">
+                <div style="font-size: 22px; font-weight: 700; color: #333;">Profile</div>
+                <div style="margin-top: 8px; color:#666;">This section is coming soon.</div>
             </div>
         </div>
     </div>
@@ -1470,12 +1458,6 @@
             });
             document.querySelector(`[data-category="${category}"]`).classList.add('active');
             
-            // Update category select in composer
-            const categorySelect = document.getElementById('noteCategory');
-            if (categorySelect) {
-                categorySelect.value = category;
-            }
-            
             // Re-render notes
             renderNotes();
         }
@@ -1493,14 +1475,12 @@
             
             const noteInput = document.getElementById('noteInput');
             const addBtn = document.getElementById('addNoteBtn');
-            const categorySelect = document.getElementById('noteCategory');
             
-            if (noteInput && addBtn && categorySelect) {
+            if (noteInput && addBtn) {
                 addBtn.onclick = () => {
                     const text = noteInput.value.trim();
-                    const category = categorySelect.value;
                     if (text) {
-                        addNote(text, category);
+                        addNote(text, selectedCategory);
                         noteInput.value = '';
                     }
                 };
@@ -1509,9 +1489,8 @@
                     if (e.key === 'Enter' && e.ctrlKey) {
                         e.preventDefault();
                         const text = noteInput.value.trim();
-                        const category = categorySelect.value;
                         if (text) {
-                            addNote(text, category);
+                            addNote(text, selectedCategory);
                             noteInput.value = '';
                         }
                     }
