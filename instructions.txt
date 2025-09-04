@@ -1,29 +1,24 @@
-Given the following survey data, provide advice on how to improve the team-collaboration.
-You must answer in JSON format in the following format: 
+Gebe mit den folgenden Umfrage Daten eine Hilfestellung um die Zusammenarbeit im Team zu erhöhen.
+Deine Antwort muss immer in JSON Format ausgegeben werden, welche den "Tag" für die Maßnahme, 
+den "title" der Maßnahme, die "description", die "hour", also die Uhrzeit der Maßname, sowie die "duration" der Maßnahme in Stunden.
+Gebe sowohl die Uhrzeiten als auch die dauer in vollen stunden an.
+JSON Format Beispiel : 
     {
         "Dienstag": [
             {
-            "title": "awf",
-            "description": "2awfr",
-            "hour": 8,
-            "duration": 3
+            "title": "Kaffepause",
+            "description": "Da viele Kaffeeliebhaber in dem Team sind, ist eine gemeinsame Kaffepause um die Team-Zusammengehörigkeit zu steigern, einer gute Idee.",
+            "hour": 10,
+            "duration": 1
             }
         ],
         "Montag": [
             {
-            "title": "awf",
-            "description": "423sg",
+            "title": "Test-Titel",
+            "description": "Test-Beschreibung",
             "hour": 12,
-            "duration": 1
-            }
-        ],
-        "Donnerstag": [
-            {
-            "title": "awf",
-            "description": "srgs",
-            "hour": 14,
-            "duration": 2
+            "duration": 3
             }
         ]
     }
-
+F

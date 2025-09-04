@@ -2,6 +2,9 @@ from groq import Groq
 import os
 import pandas
 import requests
+from pydantic import BaseModel
+from typing import Literal
+import json
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -46,27 +49,82 @@ def load_survey_data(url):
 
 def get_chat_completion(message_user, instructions):
     
-    chat_completion = client.chat.completions.create(
-        messages=[
-            # Set an optional system message. This sets the behavior of the
-            # assistant and can be used to provide specific instructions for
-            # how it should behave throughout the conversation.
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            # Set a user message for the assistant to respond to.
-            {
-                "role": "user",
-                "content": instructions + "\n" + message_user,
+    class Activity(BaseModel):
+        title: str
+        description: str
+        hour: int
+        duration: int
+
+        class Config:
+            extra = 'forbid'  # Prevent extra fields
+            validate_assignment = True  # Validate during assignment
+            json_schema_extra = {
+                "required": ["title", "description", "hour", "duration"]
             }
+    
+    class WeeklyPlan(BaseModel):
+        # This will be a dictionary with day names as keys and lists of activities as values
+        # We'll use a more flexible approach for validation
+        pass
+
+    response = client.chat.completions.create(
+        #model="moonshotai/kimi-k2-instruct", 
+        model= "meta-llama/llama-4-maverick-17b-128e-instruct",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user", 
+                "content": instructions + "\n" + message_user,
+            },
         ],
-
-        # The language model which will generate the completion.
-        model="llama-3.3-70b-versatile"
+        temperature=0.0,
+        top_p=1.0,
+        seed=42,  # Fixed seed
+        max_tokens=2048,
+        frequency_penalty=0.0,    # No frequency penalty
+        presence_penalty=0.0,     # No presence penalty
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "weekly_plan", 
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "Montag": {"type": "array", "items": Activity.model_json_schema()},
+                        "Dienstag": {"type": "array", "items": Activity.model_json_schema()},
+                        "Mittwoch": {"type": "array", "items": Activity.model_json_schema()},
+                        "Donnerstag": {"type": "array", "items": Activity.model_json_schema()},
+                        "Freitag": {"type": "array", "items": Activity.model_json_schema()},
+                        "Samstag": {"type": "array", "items": Activity.model_json_schema()},
+                        "Sonntag": {"type": "array", "items": Activity.model_json_schema()}
+                    },
+                    "additionalProperties": True
+                }
+            }
+        }
     )
+    print("--------------------------------")
+    print(message_user, "\n")
+    print(response.choices[0].message.content)
 
-    return chat_completion.choices[0].message.content
+    # Parse the JSON response
+    response_data = json.loads(response.choices[0].message.content)
+    
+    # Validate each activity in each day
+    validated_plan = {}
+    for day, activities in response_data.items():
+        validated_activities = []
+        for activity_data in activities:
+            try:
+                validated_activity = Activity.model_validate(activity_data)
+                validated_activities.append(validated_activity.model_dump())
+            except Exception as e:
+                print(f"Error validating activity for {day}: {e}")
+                print(f"Activity data: {activity_data}")
+        validated_plan[day] = validated_activities
+    
+    print(json.dumps(validated_plan, indent=2))
+    return validated_plan
 
 
 def main():
@@ -79,21 +137,26 @@ def main():
     print(pd.head())
 
     instructions = open("instructions.txt", "r").read()
-    message_user = "Explain the importance of fast language models"
+    #message_user = "Explain the importance of fast language models"
 
-
+    entire_data = ""
     for i in range(len(pd.columns)):
         column_name = pd.iloc[:, i].name
         column_values = pd.iloc[:, i].values
         
-        print(column_name)
-        print(column_values)
-        print("\n") 
+        #print(column_name)
+        #print(column_values)
+        #print("\n") 
 
-        message_user = f"{column_name} \n {column_values}"
+        #message_user = f"{column_name} \n {column_values}"
+        entire_data += f"{column_name} \n {column_values}"
         
-        chat_completion = get_chat_completion(message_user, instructions)
-        print(chat_completion)
+    chat_completion = get_chat_completion(entire_data, instructions)
+    #print(chat_completion)
+
+    # write response into events.json file
+    with open('events.json', 'w') as file:
+        json.dump(chat_completion, file)
 
 
 

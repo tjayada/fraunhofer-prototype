@@ -106,8 +106,8 @@
         .burger:hover { background: rgba(102, 126, 234, 0.12); }
 
         .burger .bar {
-            width: 18px;
-            height: 2px;
+            width: 22px;
+            height: 3px;
             background: #333;
             position: relative;
         }
@@ -117,8 +117,8 @@
             content: '';
             position: absolute;
             left: 0;
-            width: 18px;
-            height: 2px;
+            width: 22px;
+            height: 3px;
             background: #333;
         }
 
@@ -130,10 +130,11 @@
             border: 1px solid rgba(102, 126, 234, 0.35);
             background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
             color: #333;
-            padding: 8px 14px;
+            padding: 12px 18px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 10px;
             transition: all 0.2s ease;
         }
 
@@ -240,17 +241,17 @@
         }
 
         .week-grid .header.tuesday {
-            background: linear-gradient(135deg, #4ecdc4, #6ed5cd);
+            background: linear-gradient(135deg, #ffb3b3, #ffcccc);
             color: white;
         }
 
         .week-grid .header.wednesday {
-            background: linear-gradient(135deg, #45b7d1, #6bc5d8);
+            background: linear-gradient(135deg, #cc0000, #e60000);
             color: white;
         }
 
         .week-grid .header.thursday {
-            background: linear-gradient(135deg, #96ceb4, #a8d5c1);
+            background: linear-gradient(135deg, #990000, #b30000);
             color: white;
         }
 
@@ -265,15 +266,15 @@
         }
 
         .week-grid .slot-cell.tuesday {
-            background: rgba(78, 205, 196, 0.05);
+            background: rgba(255, 179, 179, 0.15);
         }
 
         .week-grid .slot-cell.wednesday {
-            background: rgba(69, 183, 209, 0.05);
+            background: rgba(139, 0, 0, 0.8);
         }
 
         .week-grid .slot-cell.thursday {
-            background: rgba(150, 206, 180, 0.05);
+            background: rgba(139, 0, 0, 0.8);
         }
 
         .week-grid .slot-cell.friday {
@@ -285,15 +286,15 @@
         }
 
         .week-grid .slot-cell.tuesday:hover {
-            background: rgba(78, 205, 196, 0.15);
+            background: rgba(255, 179, 179, 0.25);
         }
 
         .week-grid .slot-cell.wednesday:hover {
-            background: rgba(69, 183, 209, 0.15);
+            background: rgba(139, 0, 0, 0.9);
         }
 
         .week-grid .slot-cell.thursday:hover {
-            background: rgba(150, 206, 180, 0.15);
+            background: rgba(139, 0, 0, 0.9);
         }
 
         .week-grid .slot-cell.friday:hover {
@@ -604,6 +605,9 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .note-delete:hover {
@@ -686,10 +690,31 @@
             cursor: pointer;
             font-size: 12px;
             margin-left: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .note-edit:hover {
             background: #5a6fd8;
+        }
+
+        .note-accept {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .note-accept:hover {
+            background: #218838;
         }
         
         /* Chat specific components */
@@ -772,6 +797,9 @@
             color: #333;
             padding: 8px;
             font-weight: normal;
+            resize: vertical;
+            min-height: 40px;
+            font-family: inherit;
         }
 
         .send-button {
@@ -897,7 +925,7 @@
                     <div class="chat-header">KI Chat</div>
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-composer">
-                        <input id="chatInput" class="chat-input" placeholder="Type a message..." />
+                        <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
                         <button id="chatSend" class="send-button" title="Send" aria-label="Send">
                             <svg id="micIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -1429,20 +1457,32 @@
                     
                     const editBtn = document.createElement('button');
                     editBtn.className = 'note-edit';
-                    editBtn.textContent = 'Edit';
+                    editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+                    editBtn.title = 'Edit';
                     editBtn.onclick = () => {
                         editingNoteId = note.id;
                         renderNotes();
                     };
                     
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'note-delete';
-                    deleteBtn.textContent = 'Delete';
-                    deleteBtn.onclick = () => deleteNote(note.id);
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.className = 'note-accept';
+                    acceptBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>';
+                    acceptBtn.title = 'Accept';
+                    acceptBtn.onclick = () => {
+                        // Add accept functionality here
+                        console.log('Accept note:', note.id);
+                    };
+                    
+                    const declineBtn = document.createElement('button');
+                    declineBtn.className = 'note-delete';
+                    declineBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+                    declineBtn.title = 'Decline';
+                    declineBtn.onclick = () => deleteNote(note.id);
                     
                     noteElement.appendChild(textSpan);
                     noteElement.appendChild(editBtn);
-                    noteElement.appendChild(deleteBtn);
+                    noteElement.appendChild(acceptBtn);
+                    noteElement.appendChild(declineBtn);
                 }
                 
                 container.appendChild(noteElement);
