@@ -100,7 +100,7 @@
 
         .week-grid {
             display: grid;
-            grid-template-columns: 80px repeat(7, 1fr);
+            grid-template-columns: 80px repeat(5, 1fr);
             gap: 1px;
             background: #e5e7eb;
             border: 1px solid #e5e7eb;
@@ -280,7 +280,7 @@
             }
             
             .week-grid {
-                grid-template-columns: 60px repeat(7, 1fr);
+                grid-template-columns: 60px repeat(5, 1fr);
             }
         }
 
@@ -432,7 +432,8 @@
         let selectedEventIndex = null;
         let events = {};
 
-        const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const dayNames = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
+
 
         function formatDayKey(dayIndex) {
             return dayNames[dayIndex];
@@ -469,7 +470,7 @@
                 weekGrid.appendChild(header);
             });
 
-            // Create time slots from 6am to 8pm
+            // Create time slots from 06:00 to 20:00
             const startHour = 6;
             const endHour = 20;
             
@@ -477,8 +478,8 @@
                 // Time column
                 const timeCell = document.createElement('div');
                 timeCell.className = 'time-cell';
-                const ampm = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`;
-                timeCell.textContent = ampm;
+                const label24 = `${String(hour).padStart(2, '0')}:00`;
+                timeCell.textContent = label24;
                 weekGrid.appendChild(timeCell);
 
                 // 7 day columns for this hour
@@ -555,9 +556,9 @@
                     
                     const hour = Number(event.hour);
                     const duration = event.duration || 1;
-                    const ampm = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`;
+                    const ampm = `${String(hour).padStart(2, '0')}:00`;
                     const endHour = hour + duration;
-                    const endAmpm = endHour === 0 ? '12 AM' : endHour < 12 ? `${endHour} AM` : endHour === 12 ? '12 PM' : `${endHour - 12} PM`;
+                    const endAmpm = `${String(endHour).padStart(2, '0')}:00`;
                     
                     eventElement.innerHTML = `
                         <div class="event-time">${ampm} - ${endAmpm} (${duration}h)</div>
@@ -617,7 +618,7 @@
             const startHour = 6;
             const endHour = 20;
             if (hour < startHour || hour + duration > endHour + 1) {
-                alert(`Event must be within ${startHour}am to ${endHour}pm range.`);
+                alert(`Event must be within ${startHour} to ${endHour} range.`);
                 return;
             }
 

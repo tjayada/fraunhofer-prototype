@@ -3,3 +3,4 @@ events.json
 notes.json
 /venv
 .DS_Store
+.env
