@@ -14,7 +14,7 @@
   "arbeitsplatz": [
     {
       "title": "Einrichtung von Community Spaces",
-      "description": "Einrichtung von Gemeinschaftsr\u00e4umen oder Kantinen im B\u00fcro, um soziale Kontakte und das Gemeinschaftsgef\u00fchl zu f\u00f6rdern.",
+      "description": "Einrichtung von Gemeinschaftsr\u00e4umen im B\u00fcro, um soziale Kontakte und das Gemeinschaftsgef\u00fchl zu f\u00f6rdern.",
       "priority": "hoch"
     },
     {
@@ -25,8 +25,8 @@
   ],
   "work_life_balance": [
     {
-      "title": "Obstkorb f\u00fcr mehr Wohlbefinden",
-      "description": "Frisches Obst im B\u00fcro unterst\u00fctzt eine gesunde Ern\u00e4hrung, steigert das Wohlbefinden und f\u00f6rdert die Motivation im Arbeitsalltag.",
+      "title": "Bewegte Pause - Energie tanken in 10 Minuten",
+      "description": "Eine kurze, angeleitete Bewegungseinheit zur Auflockerung im Arbeitsalltag.\nSie unterst\u00fctzt Wohlbefinden und Konzentration und l\u00e4sst sich unkompliziert in den Tagesablauf integrieren.",
       "priority": "mittel"
     }
   ]

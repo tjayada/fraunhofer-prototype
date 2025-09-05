@@ -27,6 +27,8 @@
             --calendar-yellow-rgb: 255, 255, 204;
             --calendar-red: rgb(255, 229, 204);
             --calendar-red-rgb: 255, 229, 204;
+            --calendar-white: rgb(255, 255, 255);
+            --calendar-white-rgb: 255, 255, 255;
         }
 
         .container {
@@ -286,12 +288,12 @@
 
         /* Colorful weekday headers */
         .week-grid .header.montag {
-            background: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
             color: #333;
         }
 
         .week-grid .header.dienstag {
-            background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
+            background: linear-gradient(135deg, var(--calendar-white), var(--calendar-white));
             color: #333;
         }
 
@@ -306,7 +308,7 @@
         }
 
         .week-grid .header.freitag {
-            background: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
             color: #333;
         }
 
@@ -338,11 +340,11 @@
 
         /* Colorful day columns - moved after general slot-cell rule for proper specificity */
         .week-grid .slot-cell.montag {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(var(--calendar-yellow-rgb), 0.9);
         }
 
         .week-grid .slot-cell.dienstag {
-            background: rgba(var(--calendar-yellow-rgb), 0.9);
+            background: rgba(var(--calendar-white-rgb), 0.9);
         }
 
         .week-grid .slot-cell.mittwoch {
@@ -354,16 +356,16 @@
         }
 
         .week-grid .slot-cell.freitag {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(var(--calendar-yellow-rgb), 0.9);
         }
 
         /* Day-specific hover states - moved after general hover rule for proper specificity */
         .week-grid .slot-cell.montag:hover {
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(var(--calendar-yellow-rgb), 1.0);
         }
 
         .week-grid .slot-cell.dienstag:hover {
-            background: rgba(var(--calendar-yellow-rgb), 1.0);
+            background: rgba(var(--calendar-white-rgb), 1.0);
         }
 
         .week-grid .slot-cell.mittwoch:hover {
@@ -374,6 +376,10 @@
             background: rgba(var(--calendar-red-rgb), 1.0);
         }
 
+        .week-grid .slot-cell.freitag:hover {
+            background: rgba(var(--calendar-yellow-rgb), 1.0);
+        }
+
         /* Legend color helpers */
         .legend-color.red {
             background: linear-gradient(135deg, var(--calendar-red), var(--calendar-red));
@@ -381,9 +387,8 @@
         .legend-color.yellow {
             background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
         }
-
-        .week-grid .slot-cell.freitag:hover {
-            background: rgba(102, 126, 234, 0.15);
+        .legend-color.white {
+            background: linear-gradient(135deg, var(--calendar-white), var(--calendar-white));
         }
 
         .slot-cell.today {
@@ -1138,7 +1143,11 @@
                         </div>
                         <div class="legend-item">
                             <div class="legend-color yellow"></div>
-                            <span class="legend-text">Home-Office Tage</span>
+                            <span class="legend-text">Flextage</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color white"></div>
+                            <span class="legend-text">Home Office</span>
                         </div>
                     </div>
                 </div>
@@ -1186,7 +1195,7 @@
                             </div>
                             <div class="category-item" data-category="work_life_balance">
                                 <span class="category-icon">⚖️</span>
-                                <span class="category-name">Work life balance</span>
+                                <span class="category-name">Work Life Balance</span>
                             </div>
                         </div>
                     </div>
@@ -1719,9 +1728,7 @@
         }
 
         async function declineMassnahme(index) {
-            if (confirm('Möchtest du diese Maßnahme ablehnen?')) {
-                await deleteMassnahme(index);
-            }
+            await deleteMassnahme(index);
         }
 
         async function deleteMassnahme(index) {
