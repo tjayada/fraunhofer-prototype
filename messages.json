@@ -23,6 +23,14 @@
     {
       "role": "assistant",
       "text": "Nein, am Freitag ist keine hybride Veranstaltung geplant. Es ist jedoch eine Kaffepause um 10 Uhr geplant."
+    },
+    {
+      "role": "user",
+      "text": "twst"
+    },
+    {
+      "role": "assistant",
+      "text": "Das ist kein g\u00fcltiger Befehl oder eine valide Anfrage. Bitte gib einen der folgenden Befehle ein, um Informationen zu erhalten oder Aktionen auszuf\u00fchren:\n- liste events: Liste alle Events auf\n- details [tag]: Details zu den Events an einem bestimmten Tag anzeigen (z.B. \"details Montag\")\n- neue Ma\u00dfnahme [text]: Eine neue Ma\u00dfnahme hinzuf\u00fcgen (z.B. \"neue Ma\u00dfnahme Test\")\n- liste ma\u00dfnahmen: Alle Ma\u00dfnahmen auflisten"
     }
   ]
 }

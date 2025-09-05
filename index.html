@@ -1156,7 +1156,7 @@
     <div id="view-notes" class="view">
         <div class="notes-wrapper">
             <div class="notes-card">
-                <div class="notes-title">Maßnahmen</div>
+                <div class="notes-title">Hallo Carina, hier sind deine Team-Maßnahmen</div>
                 <div class="notes-content">
                     <div class="notes-sidebar">
                         <div class="category-list">
@@ -1232,7 +1232,7 @@
 
             const weekDays = getWeekDays();
 
-            weekYear.textContent = 'Dein Team Wochenplan';
+            weekYear.textContent = 'Hallo Carina, hier ist dein Wochenplan';
             weekGrid.innerHTML = '';
 
             // Top-left empty header
@@ -1325,7 +1325,7 @@
             if (dayEvents.length === 0) {
                 const noEvents = document.createElement('div');
                 noEvents.className = 'no-events';
-                noEvents.textContent = 'No events for this day. Click a time slot to add an event.';
+                noEvents.textContent = 'Keine Ereignisse für diesen Tag. Klicken Sie auf einen Zeitbereich, um ein Ereignis hinzuzufügen.';
                 eventsList.appendChild(noEvents);
             } else {
                 const withIndex = dayEvents.map((ev, originalIndex) => ({ ev, originalIndex }));
@@ -1366,7 +1366,7 @@
         }
 
         async function deleteEvent(eventIndex) {
-            if (!confirm('Delete this event?')) return;
+            if (!confirm('Dieses Ereignis löschen?')) return;
             const dayKey = formatDayKey(selectedDay);
             try {
                 const res = await fetch(`${API_BASE}/events?day=${encodeURIComponent(dayKey)}&index=${encodeURIComponent(eventIndex)}`, {
@@ -1396,17 +1396,17 @@
 
         async function onSlotClick(dayIndex, hour) {
             selectedDay = dayIndex;
-            const title = prompt('Event title:');
+            const title = prompt('Ereignistitel:');
             if (!title) return;
-            const description = prompt('Description (optional):');
-            const durationInput = prompt('Duration in hours (default: 1):');
+            const description = prompt('Beschreibung (optional):');
+            const durationInput = prompt('Dauer in Stunden (Standard: 1):'); 
             const duration = durationInput ? parseInt(durationInput) || 1 : 1;
 
             // Validate that the event fits within the 6am-8pm range
             const startHour = 6;
             const endHour = 20;
             if (hour < startHour || hour + duration > endHour + 1) {
-                alert(`Event must be within ${startHour} to ${endHour} range.`);
+                alert(`Das Ereignis muss zwischen ${startHour} und ${endHour} liegen.`);
                 return;
             }
 
@@ -1423,7 +1423,7 @@
             });
 
             if (hasOverlap) {
-                alert('This time slot overlaps with an existing event. Please choose a different time.');
+                alert('Dieser Zeitbereich überschneidet sich mit einem existierenden Ereignis. Bitte wählen Sie einen anderen Zeitbereich.');
                 return;
             }
 
@@ -1438,7 +1438,7 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.detail || 'Failed to add event');
+                    alert(err.detail || 'Fehler beim Hinzufügen des Ereignisses');
                     return;
                 }
                 const data = await res.json();
@@ -1446,7 +1446,7 @@
                 renderCalendar();
                 selectDay(selectedDay);
             } catch (e) {
-                alert('Could not reach backend. Is it running on 127.0.0.1:8000?');
+                alert('Konnte nicht mit dem Backend kommunizieren. Läuft es auf 127.0.0.1:8000?');
             }
         }
 
@@ -1454,13 +1454,13 @@
             try {
                 const res = await fetch(`${API_BASE}/events`);
                 if (!res.ok) {
-                    throw new Error('Failed to load events');
+                    throw new Error('Fehler beim Laden der Ereignisse');
                 }
                 const data = await res.json();
                 events = data.events || {};
             } catch (e) {
                 // Keep empty events but notify user once
-                console.warn('Could not load events from backend:', e);
+                console.warn('Konnte nicht mit dem Backend kommunizieren:', e);
             }
         }
 
@@ -1539,7 +1539,7 @@
             if (categoryMassnahmen.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'no-events';
-                emptyMsg.textContent = `No ${selectedCategory} massnahmen yet. Run the AI analysis to generate massnahmen.`;
+                emptyMsg.textContent = `Noch keine ${selectedCategory} Maßnahmen. Führe die KI Analyse aus, um Maßnahmen zu generieren.`;
                 container.appendChild(emptyMsg);
                 return;
             }
@@ -1577,19 +1577,19 @@
                 const editBtn = document.createElement('button');
                 editBtn.className = 'action-btn edit-btn';
                 editBtn.innerHTML = '✏️';
-                editBtn.title = 'Edit';
+                editBtn.title = 'Bearbeiten';
                 editBtn.onclick = () => editMassnahme(index);
                 
                 const acceptBtn = document.createElement('button');
                 acceptBtn.className = 'action-btn accept-btn';
                 acceptBtn.innerHTML = '✅';
-                acceptBtn.title = 'Accept';
+                acceptBtn.title = 'Akzeptieren';
                 acceptBtn.onclick = () => acceptMassnahme(index);
                 
                 const declineBtn = document.createElement('button');
                 declineBtn.className = 'action-btn decline-btn';
                 declineBtn.innerHTML = '❌';
-                declineBtn.title = 'Decline';
+                declineBtn.title = 'Ablehnen';
                 declineBtn.onclick = () => declineMassnahme(index);
                 
                 actionsElement.appendChild(editBtn);
