@@ -25,6 +25,7 @@ EVENTS_FILE = PROJECT_ROOT / "events.json"
 NOTES_FILE = PROJECT_ROOT / "notes.json"
 CHAT_FILE = PROJECT_ROOT / "messages.json"
 MASSNAHMEN_FILE = PROJECT_ROOT / "massnahmen.json"
+TABLE_CSV_FILE = PROJECT_ROOT / "table.csv"
 
 
 class Event(BaseModel):
@@ -130,6 +131,16 @@ def _write_notes(payload: Dict[str, object]) -> None:
         NOTES_FILE.write_text(json.dumps(payload, indent=2))
 
 
+def _read_table_csv_text() -> str:
+    """Read the entire table.csv as UTF-8 text; return empty string if missing/error."""
+    try:
+        if not TABLE_CSV_FILE.exists():
+            return ""
+        return TABLE_CSV_FILE.read_text(encoding="utf-8")
+    except Exception:
+        return ""
+
+
 # Chat models and helpers
 class ChatMessage(BaseModel):
     role: str = Field(..., pattern=r"^(user|assistant)$")
@@ -210,13 +221,14 @@ def get_ai_chat_completion(user_message: str) -> str:
     try:
         # Load system prompt
         #system_prompt_file = PROJECT_ROOT / "system_prompt.txt"
-        system_prompt = "Du beantwortest nur Fragen zum modernen Arbeiten und Hybriden Arbeiten, sowie zu den geplanten Events und Maßnahmen. Halte deine Antworten kurz und prägnant."
+        system_prompt = "Du beantwortest nur Fragen zum modernen Arbeiten und Hybriden Arbeiten, zu den geplanten Events und Maßnahmen sowie zu den Umfrageergebnissen (table.csv). Halte deine Antworten kurz und prägnant."
         #if system_prompt_file.exists():
         #    system_prompt = system_prompt_file.read_text()
         
         # Load events and notes for context
         events_data = _read_events()
         notes_data = _read_notes()
+        survey_csv_text = _read_table_csv_text()
         
         # Create context string
         context = f"""
@@ -225,6 +237,9 @@ Momentane Events (events.json):
 
 Momentane Maßnahmen (notes.json):
 {json.dumps(notes_data, indent=2, ensure_ascii=False)}
+
+Umfrageergebnisse (table.csv, roher CSV-Inhalt):
+{survey_csv_text}
 
 User Input: {user_message}
 """
@@ -461,6 +476,33 @@ def update_massnahme(category: str, index: int, payload: UpdateMassnahmeRequest)
     einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
     arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
     
+    return MassnahmenResponse(
+        einmalige_massnahmen=einmalige_massnahmen,
+        arbeitsplatz=arbeitsplatz
+    )
+
+
+class CreateMassnahmeRequest(BaseModel):
+    title: str
+    description: str
+    priority: str = Field(..., pattern=r"^(hoch|mittel|niedrig)$")
+
+
+@app.post("/massnahmen/{category}", response_model=MassnahmenResponse)
+def create_massnahme(category: str, payload: CreateMassnahmeRequest) -> MassnahmenResponse:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+        raise HTTPException(status_code=400, detail="Invalid category")
+
+    data = _read_massnahmen()
+    category_items = data.get(category, [])
+
+    category_items.append(payload.dict())
+    data[category] = category_items
+    _write_massnahmen(data)
+
+    einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
+    arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+
     return MassnahmenResponse(
         einmalige_massnahmen=einmalige_massnahmen,
         arbeitsplatz=arbeitsplatz

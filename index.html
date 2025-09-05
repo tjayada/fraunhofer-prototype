@@ -21,6 +21,14 @@
             overflow: hidden;
         }
 
+        :root {
+            /* Calendar theme colors - tweak these to test combinations */
+            --calendar-yellow: rgb(255, 255, 204);
+            --calendar-yellow-rgb: 255, 255, 204;
+            --calendar-red: rgb(255, 229, 204);
+            --calendar-red-rgb: 255, 229, 204;
+        }
+
         .container {
             width: 100vw;
             height: calc(100vh - 142px);
@@ -212,7 +220,7 @@
 
         .week-year {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: normal;
             color: #333;
         }
 
@@ -268,7 +276,7 @@
         .week-grid .header {
             font-weight: bold;
             background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            color: #000;
             text-align: center;
             padding: 10px 0;
             position: sticky;
@@ -283,18 +291,18 @@
         }
 
         .week-grid .header.dienstag {
-            background: linear-gradient(135deg, #F2EC83, #F2EC83);
+            background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
             color: #333;
         }
 
         .week-grid .header.mittwoch {
-            background: linear-gradient(135deg, #F77159, #F77159);
-            color: white;
+            background: linear-gradient(135deg, var(--calendar-red), var(--calendar-red));
+            color: #000;
         }
 
         .week-grid .header.donnerstag {
-            background: linear-gradient(135deg, #F77159, #F77159);
-            color: white;
+            background: linear-gradient(135deg, var(--calendar-red), var(--calendar-red));
+            color: #000;
         }
 
         .week-grid .header.freitag {
@@ -334,15 +342,15 @@
         }
 
         .week-grid .slot-cell.dienstag {
-            background: rgba(242, 236, 131, 0.9);
+            background: rgba(var(--calendar-yellow-rgb), 0.9);
         }
 
         .week-grid .slot-cell.mittwoch {
-            background: rgba(247, 113, 89, 0.9);
+            background: rgba(var(--calendar-red-rgb), 0.9);
         }
 
         .week-grid .slot-cell.donnerstag {
-            background: rgba(247, 113, 89, 0.9);
+            background: rgba(var(--calendar-red-rgb), 0.9);
         }
 
         .week-grid .slot-cell.freitag {
@@ -355,15 +363,23 @@
         }
 
         .week-grid .slot-cell.dienstag:hover {
-            background: rgba(242, 236, 131, 1.0);
+            background: rgba(var(--calendar-yellow-rgb), 1.0);
         }
 
         .week-grid .slot-cell.mittwoch:hover {
-            background: rgba(247, 113, 89, 1.0);
+            background: rgba(var(--calendar-red-rgb), 1.0);
         }
 
         .week-grid .slot-cell.donnerstag:hover {
-            background: rgba(247, 113, 89, 1.0);
+            background: rgba(var(--calendar-red-rgb), 1.0);
+        }
+
+        /* Legend color helpers */
+        .legend-color.red {
+            background: linear-gradient(135deg, var(--calendar-red), var(--calendar-red));
+        }
+        .legend-color.yellow {
+            background: linear-gradient(135deg, var(--calendar-yellow), var(--calendar-yellow));
         }
 
         .week-grid .slot-cell.freitag:hover {
@@ -379,8 +395,8 @@
             left: 2px;
             right: 2px;
             top: 2px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
-            border: 1px solid rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, rgba(88, 110, 220, 0.95), rgba(104, 60, 150, 0.95));
+            border: 1px solid rgba(88, 110, 220, 0.8);
             border-radius: 6px;
             padding: 4px 6px;
             font-size: 11px;
@@ -1117,11 +1133,11 @@
                     <div class="week-year" id="weekYear"></div>
                     <div class="calendar-legend">
                         <div class="legend-item">
-                            <div class="legend-color" style="background: linear-gradient(135deg, #F77159, #F77159);"></div>
+                            <div class="legend-color red"></div>
                             <span class="legend-text">Präsenztage</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: linear-gradient(135deg, #F2EC83, #F2EC83);"></div>
+                            <div class="legend-color yellow"></div>
                             <span class="legend-text">Home-Office Tage</span>
                         </div>
                     </div>
@@ -1156,7 +1172,7 @@
     <div id="view-notes" class="view">
         <div class="notes-wrapper">
             <div class="notes-card">
-                <div class="notes-title">Hallo Carina, hier sind deine Team-Maßnahmen</div>
+                <div class="notes-title"><strong>Hallo Carina</strong>, hier sind deine Team-Maßnahmen</div>
                 <div class="notes-content">
                     <div class="notes-sidebar">
                         <div class="category-list">
@@ -1174,7 +1190,7 @@
                         <div class="notes-list" id="notesList"></div>
                         <div class="notes-composer">
                             <textarea id="noteInput" class="note-input" placeholder="Füge eine Maßnahme hinzu..." rows="3"></textarea>
-                            <button id="addNoteBtn" class="add-note-button" title="Add Note" aria-label="Add Note">
+                            <button id="addNoteBtn" class="add-note-button" title="Add Maßnahme" aria-label="Add Maßnahme">
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -1190,7 +1206,7 @@
     <div id="view-export" class="view">
         <div class="container" style="justify-content:center; align-items:center;">
             <div class="card" style="padding: 24px; text-align: center;">
-                <div style="font-size: 22px; font-weight: 700; color: #333;">Exportieren</div>
+                <div style="font-size: 22px; font-weight: 700; color: #333;">Exportieren <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div style="margin-top: 8px; color:#666;">This section is coming soon.</div>
             </div>
         </div>
@@ -1232,7 +1248,7 @@
 
             const weekDays = getWeekDays();
 
-            weekYear.textContent = 'Hallo Carina, hier ist dein Wochenplan';
+            weekYear.innerHTML = '<strong>Hallo Carina</strong>, hier ist dein Wochenplan';
             weekGrid.innerHTML = '';
 
             // Top-left empty header
@@ -1539,9 +1555,9 @@
             if (categoryMassnahmen.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'no-events';
-                emptyMsg.textContent = `Noch keine ${selectedCategory} Maßnahmen. Führe die KI Analyse aus, um Maßnahmen zu generieren.`;
+                emptyMsg.textContent = `Noch keine ${selectedCategory} Maßnahmen. Füge unten eine neue hinzu.`;
                 container.appendChild(emptyMsg);
-                return;
+                // Continue to show composer for creating new ones
             }
 
             categoryMassnahmen.forEach((massnahme, index) => {
@@ -1929,25 +1945,86 @@
             const addBtn = document.getElementById('addNoteBtn');
             
             if (noteInput && addBtn) {
-                addBtn.onclick = () => {
-                    const text = noteInput.value.trim();
-                    if (text) {
-                        addNote(text, selectedCategory);
-                        noteInput.value = '';
-                    }
-                };
-                
+                addBtn.onclick = () => openCreateMassnahmeForm(noteInput.value.trim());
                 noteInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && e.ctrlKey) {
                         e.preventDefault();
-                        const text = noteInput.value.trim();
-                        if (text) {
-                            addNote(text, selectedCategory);
-                            noteInput.value = '';
-                        }
+                        openCreateMassnahmeForm(noteInput.value.trim());
                     }
                 });
             }
+        }
+
+        // Create new Massnahme using same edit UI
+        function openCreateMassnahmeForm(prefillText) {
+            const container = document.getElementById('notesList');
+            if (!container) return;
+            // Insert form at top
+            const formWrapper = document.createElement('div');
+            formWrapper.className = 'note-item massnahme-item';
+            const defaultTitle = prefillText ? prefillText : '';
+            formWrapper.innerHTML = `
+                <div class="massnahme-edit-form">
+                    <div class="edit-field">
+                        <label>Titel:</label>
+                        <input type="text" class="edit-title" value="${defaultTitle}" />
+                    </div>
+                    <div class="edit-field">
+                        <label>Beschreibung:</label>
+                        <textarea class="edit-description"></textarea>
+                    </div>
+                    <div class="edit-field">
+                        <label>Priorität:</label>
+                        <select class="edit-priority">
+                            <option value="hoch">Hoch</option>
+                            <option value="mittel" selected>Mittel</option>
+                            <option value="niedrig">Niedrig</option>
+                        </select>
+                    </div>
+                    <div class="edit-actions">
+                        <button class="save-btn" id="createMassnahmeSave">Hinzufügen</button>
+                        <button class="cancel-btn" id="createMassnahmeCancel">Abbrechen</button>
+                    </div>
+                </div>
+            `;
+            container.prepend(formWrapper);
+
+            const noteInput = document.getElementById('noteInput');
+            if (noteInput) noteInput.value = '';
+
+            function collectNew() {
+                const title = formWrapper.querySelector('.edit-title').value.trim();
+                const description = formWrapper.querySelector('.edit-description').value.trim();
+                const priority = formWrapper.querySelector('.edit-priority').value;
+                return { title, description, priority };
+            }
+
+            async function saveNew() {
+                const newItem = collectNew();
+                if (!newItem.title) { alert('Title is required'); return; }
+                try {
+                    const res = await fetch(`${API_BASE}/massnahmen/${selectedCategory}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newItem)
+                    });
+                    if (!res.ok) throw new Error('Failed to create massnahme');
+                    const data = await res.json();
+                    massnahmen = {
+                        einmalige_massnahmen: data.einmalige_massnahmen || [],
+                        arbeitsplatz: data.arbeitsplatz || []
+                    };
+                    renderMassnahmen();
+                } catch (e) {
+                    console.error('Error creating massnahme:', e);
+                    alert('Failed to create massnahme');
+                }
+            }
+
+            formWrapper.querySelector('#createMassnahmeSave').addEventListener('click', saveNew);
+            formWrapper.querySelector('#createMassnahmeCancel').addEventListener('click', () => {
+                renderMassnahmen();
+            });
         }
 
         // Initialize notes and massnahmen when page loads
@@ -2056,6 +2133,10 @@
                     if (res.ok) {
                         const data = await res.json();
                         const updatedMessages = data.messages || [];
+                        // Ensure the initial assistant welcome message is persistent
+                        if (updatedMessages.length === 0 || updatedMessages[0].role !== 'assistant') {
+                            updatedMessages.unshift({ role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' });
+                        }
                         saveChatMessages(updatedMessages);
                         renderChatMessages(renderTargetId, updatedMessages);
                     } else {
@@ -2111,8 +2192,8 @@
                 <div class="modal-subtitle" id="modalTime"></div>
                 <div class="modal-description" id="modalDescription"></div>
                 <div class="modal-actions">
-                    <button class="btn-secondary" id="closeModalBtn">Close</button>
-                    <button class="delete-button" id="deleteEventBtn">Delete</button>
+                    <button class="btn-secondary" id="closeModalBtn">Schließen</button>
+                    <button class="delete-button" id="deleteEventBtn">Löschen</button>
                 </div>
             </div>`;
         document.body.appendChild(modalOverlay);

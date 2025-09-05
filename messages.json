@@ -2,35 +2,19 @@
   "messages": [
     {
       "role": "user",
-      "text": "was ist Montag?"
+      "text": "Was ist am Freitag und warum ist es wichtig?"
     },
     {
       "role": "assistant",
-      "text": "Am Montag findet um 10 Uhr ein \"Team Meeting\" statt. Es dauert 1 Stunde und dient dazu, die Zusammenarbeit und Kommunikation im Team zu verbessern."
+      "text": "Am Freitag findet um 10 Uhr eine Kaffepause statt. Diese ist wichtig, um die Team-Zusammengeh\u00f6rigkeit zu steigern und die Kommunikation unter den Kollegen zu f\u00f6rdern."
     },
     {
       "role": "user",
-      "text": "wie viele Personen wurden befragt?"
+      "text": "Wie viele Leute haben am Survey teilgenommen und wie zufrieden waren diese generell?"
     },
     {
       "role": "assistant",
-      "text": "Es liegen keine Informationen \u00fcber Befragungen vor, da die \"notes\" in notes.json leer sind."
-    },
-    {
-      "role": "user",
-      "text": "ist Freitag hybrid?"
-    },
-    {
-      "role": "assistant",
-      "text": "Nein, am Freitag ist keine hybride Veranstaltung geplant. Es ist jedoch eine Kaffepause um 10 Uhr geplant."
-    },
-    {
-      "role": "user",
-      "text": "twst"
-    },
-    {
-      "role": "assistant",
-      "text": "Das ist kein g\u00fcltiger Befehl oder eine valide Anfrage. Bitte gib einen der folgenden Befehle ein, um Informationen zu erhalten oder Aktionen auszuf\u00fchren:\n- liste events: Liste alle Events auf\n- details [tag]: Details zu den Events an einem bestimmten Tag anzeigen (z.B. \"details Montag\")\n- neue Ma\u00dfnahme [text]: Eine neue Ma\u00dfnahme hinzuf\u00fcgen (z.B. \"neue Ma\u00dfnahme Test\")\n- liste ma\u00dfnahmen: Alle Ma\u00dfnahmen auflisten"
+      "text": "Es haben 9 Personen an der Umfrage teilgenommen. Die Zufriedenheit mit der hybriden Arbeitssituation wurde auf einer Skala von 1 bis 5 bewertet, wobei 5 sehr zufrieden bedeutet. Die Antworten variieren zwischen 3 und 5, was auf eine allgemeine Zufriedenheit hindeutet. Der Durchschnitt liegt bei etwa 4, was auf eine \u00fcberwiegend positive Einsch\u00e4tzung der hybriden Arbeitssituation schlie\u00dfen l\u00e4sst."
     }
   ]
 }
