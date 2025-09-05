@@ -3,23 +3,23 @@
     {
       "title": "Team-Building Workshop",
       "description": "Ein Workshop zur St\u00e4rkung der Teamdynamik und Kommunikation, insbesondere um das Gemeinschaftsgef\u00fchl zu st\u00e4rken und Absprachen effizienter zu gestalten.",
-      "priority": "hoch"
+      "priority": "mittel"
     },
     {
-      "title": "Einrichtung von Community Spaces",
-      "description": "Einrichtung von Gemeinschaftsr\u00e4umen oder Kantinen im B\u00fcro, um soziale Kontakte und das Gemeinschaftsgef\u00fchl zu f\u00f6rdern.",
+      "title": "kamera an in hybrid",
+      "description": "self explanatory",
       "priority": "mittel"
     }
   ],
   "arbeitsplatz": [
     {
-      "title": "Community Spaces im B\u00fcro",
-      "description": "Gemeinschaftspl\u00e4tze schaffen, in denen sich Mitarbeiter begegnen und informell austauschen k\u00f6nnen.",
+      "title": "Einrichtung von Community Spaces",
+      "description": "Einrichtung von Gemeinschaftsr\u00e4umen oder Kantinen im B\u00fcro, um soziale Kontakte und das Gemeinschaftsgef\u00fchl zu f\u00f6rdern.",
       "priority": "hoch"
     },
     {
-      "title": "Flexible Arbeitsplatzgestaltung",
-      "description": "Einf\u00fchrung von Multispaces und flexiblen Arbeitspl\u00e4tzen im B\u00fcro, um sowohl konzentriertes Arbeiten als auch Kommunikation zu erm\u00f6glichen.",
+      "title": "telefon Kabine um St\u00f6rungen durch Telefonate zu verringern",
+      "description": "telefon Kabine um St\u00f6rungen durch Telefonate zu verringern",
       "priority": "mittel"
     }
   ]

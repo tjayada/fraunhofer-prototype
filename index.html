@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Calendar & Events</title>
+    <title>Wochenkalender & Ereignisse</title>
     <style>
         * {
             margin: 0;
@@ -1110,13 +1110,13 @@
                 <button class="nav-item" data-view="notes">Maßnahmen</button>
             </div>
             <div class="header-right">
-                <button class="nav-item" data-view="profile" title="Profile">
+                <button class="nav-item" data-view="profile" title="Profil">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                         <circle cx="12" cy="7" r="4"/>
                     </svg>
                 </button>
-                <button class="burger" aria-label="Menu" title="Menu">
+                <button class="burger" aria-label="Menü" title="Menü">
                     <span class="bar"></span>
                 </button>
             </div>
@@ -1151,7 +1151,7 @@
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-composer">
                         <textarea id="chatInput" class="chat-input" placeholder="Nachricht an KI senden..." rows="1"></textarea>
-                        <button id="chatSend" class="send-button" title="Send" aria-label="Send">
+                        <button id="chatSend" class="send-button" title="Senden" aria-label="Senden">
                             <svg id="micIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -1177,8 +1177,8 @@
                     <div class="notes-sidebar">
                         <div class="category-list">
                             <div class="category-item active" data-category="einmalige_massnahmen">
-                                <span class="category-icon">⚡</span>
-                                <span class="category-name">Einmalige Maßnahmen</span>
+                                <span class="category-icon">👥</span>
+                                <span class="category-name">Team-Maßnahmen</span>
                             </div>
                             <div class="category-item" data-category="arbeitsplatz">
                                 <span class="category-icon">🏢</span>
@@ -1207,7 +1207,7 @@
         <div class="container" style="justify-content:center; align-items:center;">
             <div class="card" style="padding: 24px; text-align: center;">
                 <div style="font-size: 22px; font-weight: 700; color: #333;">Exportieren <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
-                <div style="margin-top: 8px; color:#666;">This section is coming soon.</div>
+                <div style="margin-top: 8px; color:#666;">Dieser Bereich ist bald verfügbar.</div>
             </div>
         </div>
     </div>
@@ -1215,8 +1215,8 @@
     <div id="view-profile" class="view">
         <div class="container" style="justify-content:center; align-items:center;">
             <div class="card" style="padding: 24px; text-align: center;">
-                <div style="font-size: 22px; font-weight: 700; color: #333;">Profile</div>
-                <div style="margin-top: 8px; color:#666;">This section is coming soon.</div>
+                <div style="font-size: 22px; font-weight: 700; color: #333;">Profil</div>
+                <div style="margin-top: 8px; color:#666;">Dieser Bereich ist bald verfügbar.</div>
             </div>
         </div>
     </div>
@@ -1292,7 +1292,7 @@
                     if (eventAtThisHour) {
                         const chip = document.createElement('div');
                         chip.className = 'event-chip';
-                        chip.textContent = eventAtThisHour.title || 'Event';
+                        chip.textContent = eventAtThisHour.title || 'Ereignis';
                         chip.title = eventAtThisHour.description ? 
                             `${eventAtThisHour.title} — ${eventAtThisHour.description} (${eventAtThisHour.duration || 1}h)` : 
                             `${eventAtThisHour.title} (${eventAtThisHour.duration || 1}h)`;
@@ -1391,7 +1391,7 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.detail || 'Failed to delete event');
+                    alert(err.detail || 'Fehler beim Löschen des Ereignisses');
                     return;
                 }
                 const data = await res.json();
@@ -1529,7 +1529,7 @@
         async function loadMassnahmen() {
             try {
                 const res = await fetch(`${API_BASE}/massnahmen`);
-                if (!res.ok) throw new Error('Failed to load massnahmen');
+                if (!res.ok) throw new Error('Fehler beim Laden der Maßnahmen');
                 const data = await res.json();
                 massnahmen = {
                     einmalige_massnahmen: data.einmalige_massnahmen || [],
@@ -1675,7 +1675,7 @@
             };
 
             if (!updatedMassnahme.title) {
-                alert('Title is required');
+                alert('Titel ist erforderlich');
                 return;
             }
 
@@ -1686,7 +1686,7 @@
                     body: JSON.stringify(updatedMassnahme)
                 });
 
-                if (!res.ok) throw new Error('Failed to update massnahme');
+                if (!res.ok) throw new Error('Fehler beim Aktualisieren der Maßnahme');
 
                 const data = await res.json();
                 massnahmen = {
@@ -1696,7 +1696,7 @@
                 renderMassnahmen();
             } catch (e) {
                 console.error('Error updating massnahme:', e);
-                alert('Failed to update massnahme');
+                alert('Aktualisieren der Maßnahme fehlgeschlagen');
             }
         }
 
@@ -1724,7 +1724,7 @@
                     method: 'DELETE'
                 });
 
-                if (!res.ok) throw new Error('Failed to delete massnahme');
+                if (!res.ok) throw new Error('Fehler beim Löschen der Maßnahme');
 
                 const data = await res.json();
                 massnahmen = {
@@ -1734,14 +1734,14 @@
                 renderMassnahmen();
             } catch (e) {
                 console.error('Error deleting massnahme:', e);
-                alert('Failed to delete massnahme');
+                alert('Löschen der Maßnahme fehlgeschlagen');
             }
         }
 
         async function loadNotes() {
             try {
                 const res = await fetch(`${API_BASE}/notes`);
-                if (!res.ok) throw new Error('Failed to load notes');
+                if (!res.ok) throw new Error('Fehler beim Laden der Notizen');
                 const data = await res.json();
                 notes = data.notes || [];
                 renderNotes();
@@ -1760,7 +1760,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: text.trim(), category: category || 'einmalige_massnahmen' })
                 });
-                if (!res.ok) throw new Error('Failed to add note');
+                if (!res.ok) throw new Error('Fehler beim Hinzufügen der Notiz');
                 const data = await res.json();
                 notes = data.notes || [];
                 renderNotes();
@@ -1777,7 +1777,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: text.trim(), category: category || 'einmalige_massnahmen' })
                 });
-                if (!res.ok) throw new Error('Failed to update note');
+                if (!res.ok) throw new Error('Fehler beim Aktualisieren der Notiz');
                 const data = await res.json();
                 notes = data.notes || [];
                 renderNotes();
@@ -1788,12 +1788,12 @@
         }
 
         async function deleteNote(noteId) {
-            if (!confirm('Delete this note?')) return;
+            if (!confirm('Diese Notiz löschen?')) return;
             try {
                 const res = await fetch(`${API_BASE}/notes/${noteId}`, {
                     method: 'DELETE'
                 });
-                if (!res.ok) throw new Error('Failed to delete note');
+                if (!res.ok) throw new Error('Fehler beim Löschen der Notiz');
                 const data = await res.json();
                 notes = data.notes || [];
                 renderNotes();
@@ -1815,7 +1815,7 @@
             if (filteredNotes.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'no-events';
-                emptyMsg.textContent = `No ${selectedCategory} notes yet. Add your first note below.`;
+                emptyMsg.textContent = `Noch keine Notizen in ${selectedCategory}. Füge unten deine erste Notiz hinzu.`;
                 container.appendChild(emptyMsg);
                 return;
             }
@@ -2001,14 +2001,14 @@
 
             async function saveNew() {
                 const newItem = collectNew();
-                if (!newItem.title) { alert('Title is required'); return; }
+                if (!newItem.title) { alert('Titel ist erforderlich'); return; }
                 try {
                     const res = await fetch(`${API_BASE}/massnahmen/${selectedCategory}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(newItem)
                     });
-                    if (!res.ok) throw new Error('Failed to create massnahme');
+                    if (!res.ok) throw new Error('Fehler beim Erstellen der Maßnahme');
                     const data = await res.json();
                     massnahmen = {
                         einmalige_massnahmen: data.einmalige_massnahmen || [],
@@ -2017,7 +2017,7 @@
                     renderMassnahmen();
                 } catch (e) {
                     console.error('Error creating massnahme:', e);
-                    alert('Failed to create massnahme');
+                    alert('Erstellen der Maßnahme fehlgeschlagen');
                 }
             }
 
@@ -2141,13 +2141,13 @@
                         renderChatMessages(renderTargetId, updatedMessages);
                     } else {
                         // Fallback: add error message
-                        messages.push({ role: 'assistant', text: 'Sorry, I encountered an error. Please try again.' });
+                        messages.push({ role: 'assistant', text: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.' });
                         saveChatMessages(messages);
                         renderChatMessages(renderTargetId, messages);
                     }
                 } catch (error) {
                     // Fallback: add error message
-                    messages.push({ role: 'assistant', text: 'Sorry, I cannot connect to the AI service. Please check if the backend is running.' });
+                    messages.push({ role: 'assistant', text: 'Entschuldigung, ich kann keine Verbindung zum KI-Dienst herstellen. Bitte prüfe, ob das Backend läuft.' });
                     saveChatMessages(messages);
                     renderChatMessages(renderTargetId, messages);
                 }
@@ -2211,7 +2211,7 @@
             const start = `${String(hour).padStart(2,'0')}:00`;
             const end = `${String(hour + duration).padStart(2,'0')}:00`;
 
-            document.getElementById('modalTitle').textContent = ev.title || 'Event';
+            document.getElementById('modalTitle').textContent = ev.title || 'Ereignis';
             document.getElementById('modalTime').textContent = `${formatDisplayDay(dayIndex)} • ${start} - ${end} (${duration}h)`;
             document.getElementById('modalDescription').textContent = ev.description || '';
 
