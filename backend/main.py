@@ -161,6 +161,7 @@ class Massnahme(BaseModel):
 class MassnahmenResponse(BaseModel):
     einmalige_massnahmen: List[Massnahme]
     arbeitsplatz: List[Massnahme]
+    work_life_balance: List[Massnahme]
 
 
 def _read_chat() -> Dict[str, object]:
@@ -194,16 +195,17 @@ def _read_massnahmen() -> Dict[str, List[dict]]:
     with _file_lock:
         try:
             if not MASSNAHMEN_FILE.exists():
-                return {"einmalige_massnahmen": [], "arbeitsplatz": []}
+                return {"einmalige_massnahmen": [], "arbeitsplatz": [], "work_life_balance": []}
             raw = MASSNAHMEN_FILE.read_text()
             data = json.loads(raw) if raw.strip() else {}
             if not isinstance(data, dict):
-                return {"einmalige_massnahmen": [], "arbeitsplatz": []}
+                return {"einmalige_massnahmen": [], "arbeitsplatz": [], "work_life_balance": []}
             
-            # Ensure both categories exist
+            # Ensure all three categories exist
             result = {
                 "einmalige_massnahmen": data.get("einmalige_massnahmen", []),
-                "arbeitsplatz": data.get("arbeitsplatz", [])
+                "arbeitsplatz": data.get("arbeitsplatz", []),
+                "work_life_balance": data.get("work_life_balance", [])
             }
             
             # Validate that each category is a list
@@ -213,7 +215,7 @@ def _read_massnahmen() -> Dict[str, List[dict]]:
             
             return result
         except Exception:
-            return {"einmalige_massnahmen": [], "arbeitsplatz": []}
+            return {"einmalige_massnahmen": [], "arbeitsplatz": [], "work_life_balance": []}
 
 
 def get_ai_chat_completion(user_message: str) -> str:
@@ -438,10 +440,12 @@ def get_massnahmen() -> MassnahmenResponse:
     # Convert to Massnahme objects for validation
     einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
     arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    work_life_balance = [Massnahme(**item) for item in data["work_life_balance"]]
     
     return MassnahmenResponse(
         einmalige_massnahmen=einmalige_massnahmen,
-        arbeitsplatz=arbeitsplatz
+        arbeitsplatz=arbeitsplatz,
+        work_life_balance=work_life_balance
     )
 
 
@@ -458,7 +462,7 @@ class UpdateMassnahmeRequest(BaseModel):
 
 @app.put("/massnahmen/{category}/{index}", response_model=MassnahmenResponse)
 def update_massnahme(category: str, index: int, payload: UpdateMassnahmeRequest) -> MassnahmenResponse:
-    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz", "work_life_balance"]:
         raise HTTPException(status_code=400, detail="Invalid category")
     
     data = _read_massnahmen()
@@ -475,10 +479,12 @@ def update_massnahme(category: str, index: int, payload: UpdateMassnahmeRequest)
     # Return updated data
     einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
     arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    work_life_balance = [Massnahme(**item) for item in data["work_life_balance"]]
     
     return MassnahmenResponse(
         einmalige_massnahmen=einmalige_massnahmen,
-        arbeitsplatz=arbeitsplatz
+        arbeitsplatz=arbeitsplatz,
+        work_life_balance=work_life_balance
     )
 
 
@@ -490,7 +496,7 @@ class CreateMassnahmeRequest(BaseModel):
 
 @app.post("/massnahmen/{category}", response_model=MassnahmenResponse)
 def create_massnahme(category: str, payload: CreateMassnahmeRequest) -> MassnahmenResponse:
-    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz", "work_life_balance"]:
         raise HTTPException(status_code=400, detail="Invalid category")
 
     data = _read_massnahmen()
@@ -502,16 +508,18 @@ def create_massnahme(category: str, payload: CreateMassnahmeRequest) -> Massnahm
 
     einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
     arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    work_life_balance = [Massnahme(**item) for item in data["work_life_balance"]]
 
     return MassnahmenResponse(
         einmalige_massnahmen=einmalige_massnahmen,
-        arbeitsplatz=arbeitsplatz
+        arbeitsplatz=arbeitsplatz,
+        work_life_balance=work_life_balance
     )
 
 
 @app.delete("/massnahmen/{category}/{index}", response_model=MassnahmenResponse)
 def delete_massnahme(category: str, index: int) -> MassnahmenResponse:
-    if category not in ["einmalige_massnahmen", "arbeitsplatz"]:
+    if category not in ["einmalige_massnahmen", "arbeitsplatz", "work_life_balance"]:
         raise HTTPException(status_code=400, detail="Invalid category")
     
     data = _read_massnahmen()
@@ -528,9 +536,11 @@ def delete_massnahme(category: str, index: int) -> MassnahmenResponse:
     # Return updated data
     einmalige_massnahmen = [Massnahme(**item) for item in data["einmalige_massnahmen"]]
     arbeitsplatz = [Massnahme(**item) for item in data["arbeitsplatz"]]
+    work_life_balance = [Massnahme(**item) for item in data["work_life_balance"]]
     
     return MassnahmenResponse(
         einmalige_massnahmen=einmalige_massnahmen,
-        arbeitsplatz=arbeitsplatz
+        arbeitsplatz=arbeitsplatz,
+        work_life_balance=work_life_balance
     )
 

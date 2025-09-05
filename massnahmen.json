@@ -6,8 +6,8 @@
       "priority": "mittel"
     },
     {
-      "title": "kamera an in hybrid",
-      "description": "self explanatory",
+      "title": "Verbindliche Kamera-Nutzung in hybriden Meetings",
+      "description": "Teilnehmer schalten in hybriden Besprechungen verpflichtend die Kamera ein, um mehr Pr\u00e4senz, bessere Kommunikation und ein st\u00e4rkeres Gemeinschaftsgef\u00fchl zu schaffen.",
       "priority": "mittel"
     }
   ],
@@ -18,8 +18,15 @@
       "priority": "hoch"
     },
     {
-      "title": "telefon Kabine um St\u00f6rungen durch Telefonate zu verringern",
-      "description": "telefon Kabine um St\u00f6rungen durch Telefonate zu verringern",
+      "title": "Telefonkabine zur ungest\u00f6rten Zusammenarbeit",
+      "description": "Ein separater Raum f\u00fcr Telefonate reduziert St\u00f6rungen im B\u00fcroalltag und schafft eine konzentriertere Arbeitsatmosph\u00e4re f\u00fcr alle Mitarbeitenden.",
+      "priority": "mittel"
+    }
+  ],
+  "work_life_balance": [
+    {
+      "title": "Obstkorb f\u00fcr mehr Wohlbefinden",
+      "description": "Frisches Obst im B\u00fcro unterst\u00fctzt eine gesunde Ern\u00e4hrung, steigert das Wohlbefinden und f\u00f6rdert die Motivation im Arbeitsalltag.",
       "priority": "mittel"
     }
   ]

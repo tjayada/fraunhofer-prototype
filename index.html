@@ -1184,6 +1184,10 @@
                                 <span class="category-icon">🏢</span>
                                 <span class="category-name">Arbeitsplatz</span>
                             </div>
+                            <div class="category-item" data-category="work_life_balance">
+                                <span class="category-icon">⚖️</span>
+                                <span class="category-name">Work life balance</span>
+                            </div>
                         </div>
                     </div>
                     <div class="notes-main">
@@ -1524,7 +1528,7 @@
         let selectedCategory = 'einmalige_massnahmen';
         
         // Massnahmen logic
-        let massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [] };
+        let massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [], work_life_balance: [] };
 
         async function loadMassnahmen() {
             try {
@@ -1533,12 +1537,13 @@
                 const data = await res.json();
                 massnahmen = {
                     einmalige_massnahmen: data.einmalige_massnahmen || [],
-                    arbeitsplatz: data.arbeitsplatz || []
+                    arbeitsplatz: data.arbeitsplatz || [],
+                    work_life_balance: data.work_life_balance || []
                 };
                 renderMassnahmen();
             } catch (e) {
                 console.warn('Could not load massnahmen from backend:', e);
-                massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [] };
+                massnahmen = { einmalige_massnahmen: [], arbeitsplatz: [], work_life_balance: [] };
                 renderMassnahmen();
             }
         }
@@ -1691,7 +1696,8 @@
                 const data = await res.json();
                 massnahmen = {
                     einmalige_massnahmen: data.einmalige_massnahmen || [],
-                    arbeitsplatz: data.arbeitsplatz || []
+                    arbeitsplatz: data.arbeitsplatz || [],
+                    work_life_balance: data.work_life_balance || []
                 };
                 renderMassnahmen();
             } catch (e) {
@@ -1729,7 +1735,8 @@
                 const data = await res.json();
                 massnahmen = {
                     einmalige_massnahmen: data.einmalige_massnahmen || [],
-                    arbeitsplatz: data.arbeitsplatz || []
+                    arbeitsplatz: data.arbeitsplatz || [],
+                    work_life_balance: data.work_life_balance || []
                 };
                 renderMassnahmen();
             } catch (e) {
@@ -1837,6 +1844,7 @@
                     categorySelect.innerHTML = `
                         <option value="einmalige_massnahmen" ${note.category === 'einmalige_massnahmen' ? 'selected' : ''}>⚡ Einmalige Maßnahmen</option>
                         <option value="arbeitsplatz" ${note.category === 'arbeitsplatz' ? 'selected' : ''}>🏢 Arbeitsplatz</option>
+                        <option value="work_life_balance" ${note.category === 'work_life_balance' ? 'selected' : ''}>⚖️ Work life balance</option>
                     `;
                     
                     const textarea = document.createElement('textarea');
@@ -1922,7 +1930,7 @@
             document.querySelector(`[data-category="${category}"]`).classList.add('active');
             
             // Re-render based on whether we have massnahmen data or notes
-            if (massnahmen.einmalige_massnahmen.length > 0 || massnahmen.arbeitsplatz.length > 0) {
+            if (massnahmen.einmalige_massnahmen.length > 0 || massnahmen.arbeitsplatz.length > 0 || massnahmen.work_life_balance.length > 0) {
                 renderMassnahmen();
             } else {
                 renderNotes();
@@ -2012,7 +2020,8 @@
                     const data = await res.json();
                     massnahmen = {
                         einmalige_massnahmen: data.einmalige_massnahmen || [],
-                        arbeitsplatz: data.arbeitsplatz || []
+                        arbeitsplatz: data.arbeitsplatz || [],
+                        work_life_balance: data.work_life_balance || []
                     };
                     renderMassnahmen();
                 } catch (e) {
