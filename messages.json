@@ -2,43 +2,27 @@
   "messages": [
     {
       "role": "user",
-      "text": "hallo"
+      "text": "was ist Montag?"
     },
     {
       "role": "assistant",
-      "text": "Hallo! Wie kann ich Ihnen helfen? M\u00f6chten Sie Informationen zu Ihren Terminen oder Ma\u00dfnahmen erhalten?"
+      "text": "Am Montag findet um 10 Uhr ein \"Team Meeting\" statt. Es dauert 1 Stunde und dient dazu, die Zusammenarbeit und Kommunikation im Team zu verbessern."
     },
     {
       "role": "user",
-      "text": "warum ein meeting am Montag?"
+      "text": "wie viele Personen wurden befragt?"
     },
     {
       "role": "assistant",
-      "text": "Das Meeting am Montag ist ein w\u00f6chentliches Team-Meeting, um die Zusammenarbeit und Kommunikation im Team zu verbessern."
+      "text": "Es liegen keine Informationen \u00fcber Befragungen vor, da die \"notes\" in notes.json leer sind."
     },
     {
       "role": "user",
-      "text": "warum Kaffe pause am Freitag? nicht zeit Verschwendung?"
+      "text": "ist Freitag hybrid?"
     },
     {
       "role": "assistant",
-      "text": "Die Kaffepause am Freitag ist geplant, um die Team-Zusammengeh\u00f6rigkeit zu steigern. Sie dient als eine Gelegenheit, dass alle Teammitglieder zusammenkommen und sich austauschen k\u00f6nnen, was letztlich die Zusammenarbeit und Kommunikation verbessert. Es ist also nicht als Zeitverschwendung gedacht, sondern vielmehr als eine Ma\u00dfnahme, um das Team zu st\u00e4rken."
-    },
-    {
-      "role": "user",
-      "text": "hi"
-    },
-    {
-      "role": "assistant",
-      "text": "Hallo! Wie kann ich Ihnen helfen? M\u00f6chten Sie Informationen zu anstehenden Events oder Ma\u00dfnahmen?"
-    },
-    {
-      "role": "user",
-      "text": "test"
-    },
-    {
-      "role": "assistant",
-      "text": "Das ist kein g\u00fcltiger Befehl. Bitte gib einen der folgenden Befehle ein:\n- liste events\n- liste massnahmen\n- neuer event\n- neue massnahme\n- l\u00f6se event <Titel>\n- l\u00f6se massnahme <ID>\n\nWenn du Hilfe ben\u00f6tigst, stehe ich gerne zur Verf\u00fcgung."
+      "text": "Nein, am Freitag ist keine hybride Veranstaltung geplant. Es ist jedoch eine Kaffepause um 10 Uhr geplant."
     }
   ]
 }

@@ -60,6 +60,7 @@
         }
 
         .header-left,
+        .header-center,
         .header-right {
             display: flex;
             align-items: center;
@@ -74,25 +75,32 @@
             padding-right: 20px;
         }
 
+        .header-center {
+            justify-content: center;
+            flex: 1;
+        }
+        /* Make top-right buttons uniform size */
+        .header-right .nav-item {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .app-logo {
-            height: 64px;
+            height: 52px;
             border-radius: 6px;
             margin-left: 8px;
             margin-top: 16px;
         }
 
-        .greeting {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            background: transparent;
-            padding: 8px 0;
-            margin: 0;
-        }
+        
 
         .burger {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -134,7 +142,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 12px;
             transition: all 0.2s ease;
         }
 
@@ -194,15 +202,49 @@
 
         .calendar-header {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
             flex-shrink: 0;
+            gap: 10px;
         }
 
         .week-year {
             font-size: 24px;
             font-weight: bold;
+            color: #333;
+        }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .legend-text {
+            font-size: 14px;
+            font-weight: 600;
             color: #333;
         }
 
@@ -235,71 +277,32 @@
         }
 
         /* Colorful weekday headers */
-        .week-grid .header.monday {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        .week-grid .header.montag {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .week-grid .header.dienstag {
+            background: linear-gradient(135deg, #F2EC83, #F2EC83);
+            color: #333;
+        }
+
+        .week-grid .header.mittwoch {
+            background: linear-gradient(135deg, #F77159, #F77159);
             color: white;
         }
 
-        .week-grid .header.tuesday {
-            background: linear-gradient(135deg, #ffb3b3, #ffcccc);
+        .week-grid .header.donnerstag {
+            background: linear-gradient(135deg, #F77159, #F77159);
             color: white;
         }
 
-        .week-grid .header.wednesday {
-            background: linear-gradient(135deg, #cc0000, #e60000);
-            color: white;
+        .week-grid .header.freitag {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
         }
 
-        .week-grid .header.thursday {
-            background: linear-gradient(135deg, #990000, #b30000);
-            color: white;
-        }
 
-        .week-grid .header.friday {
-            background: linear-gradient(135deg, #feca57, #fed976);
-            color: white;
-        }
-
-        /* Colorful day columns */
-        .week-grid .slot-cell.monday {
-            background: rgba(255, 107, 107, 0.05);
-        }
-
-        .week-grid .slot-cell.tuesday {
-            background: rgba(255, 179, 179, 0.15);
-        }
-
-        .week-grid .slot-cell.wednesday {
-            background: rgba(139, 0, 0, 0.8);
-        }
-
-        .week-grid .slot-cell.thursday {
-            background: rgba(139, 0, 0, 0.8);
-        }
-
-        .week-grid .slot-cell.friday {
-            background: rgba(254, 202, 87, 0.05);
-        }
-
-        .week-grid .slot-cell.monday:hover {
-            background: rgba(255, 107, 107, 0.15);
-        }
-
-        .week-grid .slot-cell.tuesday:hover {
-            background: rgba(255, 179, 179, 0.25);
-        }
-
-        .week-grid .slot-cell.wednesday:hover {
-            background: rgba(139, 0, 0, 0.9);
-        }
-
-        .week-grid .slot-cell.thursday:hover {
-            background: rgba(139, 0, 0, 0.9);
-        }
-
-        .week-grid .slot-cell.friday:hover {
-            background: rgba(254, 202, 87, 0.15);
-        }
 
         .time-cell {
             background: rgba(255, 255, 255, 0.8);
@@ -322,6 +325,48 @@
         }
 
         .slot-cell:hover {
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        /* Colorful day columns - moved after general slot-cell rule for proper specificity */
+        .week-grid .slot-cell.montag {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .week-grid .slot-cell.dienstag {
+            background: rgba(242, 236, 131, 0.9);
+        }
+
+        .week-grid .slot-cell.mittwoch {
+            background: rgba(247, 113, 89, 0.9);
+        }
+
+        .week-grid .slot-cell.donnerstag {
+            background: rgba(247, 113, 89, 0.9);
+        }
+
+        .week-grid .slot-cell.freitag {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Day-specific hover states - moved after general hover rule for proper specificity */
+        .week-grid .slot-cell.montag:hover {
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .week-grid .slot-cell.dienstag:hover {
+            background: rgba(242, 236, 131, 1.0);
+        }
+
+        .week-grid .slot-cell.mittwoch:hover {
+            background: rgba(247, 113, 89, 1.0);
+        }
+
+        .week-grid .slot-cell.donnerstag:hover {
+            background: rgba(247, 113, 89, 1.0);
+        }
+
+        .week-grid .slot-cell.freitag:hover {
             background: rgba(102, 126, 234, 0.15);
         }
 
@@ -1044,6 +1089,10 @@
             <div class="header-left">
                 <img src="logo.png" alt="Logo" class="app-logo" />
             </div>
+            <div class="header-center">
+                <button class="nav-item active" data-view="calendar">Wochenplan</button>
+                <button class="nav-item" data-view="notes">Maßnahmen</button>
+            </div>
             <div class="header-right">
                 <button class="nav-item" data-view="profile" title="Profile">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1056,16 +1105,6 @@
                 </button>
             </div>
         </div>
-        <div class="header-row">
-            <div class="header-left">
-                <div class="greeting" id="greeting">Hello John, your calendar</div>
-            </div>
-            <div class="header-right">
-                <button class="nav-item active" data-view="calendar">Wochenplan</button>
-                <button class="nav-item" data-view="notes">Maßnahmen</button>
-                
-            </div>
-        </div>
     </div>
 
     <div id="view-calendar" class="view active">
@@ -1076,6 +1115,16 @@
                 </div>
                 <div class="calendar-header">
                     <div class="week-year" id="weekYear"></div>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #F77159, #F77159);"></div>
+                            <span class="legend-text">Präsenztage</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #F2EC83, #F2EC83);"></div>
+                            <span class="legend-text">Home-Office Tage</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="week-grid" id="weekGrid"></div>
             </div>
@@ -1085,7 +1134,7 @@
                     <div class="chat-header">KI Chat</div>
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-composer">
-                        <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
+                        <textarea id="chatInput" class="chat-input" placeholder="Nachricht an KI senden..." rows="1"></textarea>
                         <button id="chatSend" class="send-button" title="Send" aria-label="Send">
                             <svg id="micIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -1124,7 +1173,7 @@
                     <div class="notes-main">
                         <div class="notes-list" id="notesList"></div>
                         <div class="notes-composer">
-                            <textarea id="noteInput" class="note-input" placeholder="Add a new note..." rows="3"></textarea>
+                            <textarea id="noteInput" class="note-input" placeholder="Füge eine Maßnahme hinzu..." rows="3"></textarea>
                             <button id="addNoteBtn" class="add-note-button" title="Add Note" aria-label="Add Note">
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
@@ -1427,19 +1476,7 @@
             const activeTab = document.querySelector(`.nav-item[data-view="${viewName}"]`);
             if (activeTab) activeTab.classList.add('active');
 
-            // Update greeting based on current view
-            const greeting = document.getElementById('greeting');
-            if (greeting) {
-                if (viewName === 'calendar') {
-                    greeting.textContent = 'Hello John, your calendar';
-                } else if (viewName === 'notes') {
-                    greeting.textContent = 'Hello John, your notes';
-                } else if (viewName === 'export') {
-                    greeting.textContent = 'Hello John, export your data';
-                } else if (viewName === 'profile') {
-                    greeting.textContent = 'Hello John, your profile';
-                }
-            }
+            // Greeting removed from header; no dynamic greeting updates needed
 
             if (viewName === 'calendar') {
                 renderCalendar();
@@ -1581,15 +1618,15 @@
             editForm.className = 'massnahme-edit-form';
             editForm.innerHTML = `
                 <div class="edit-field">
-                    <label>Title:</label>
+                    <label>Titel:</label>
                     <input type="text" class="edit-title" value="${massnahme.title}" />
                 </div>
                 <div class="edit-field">
-                    <label>Description:</label>
+                    <label>Beschreibung:</label>
                     <textarea class="edit-description">${massnahme.description}</textarea>
                 </div>
                 <div class="edit-field">
-                    <label>Priority:</label>
+                    <label>Priorität:</label>
                     <select class="edit-priority">
                         <option value="hoch" ${massnahme.priority === 'hoch' ? 'selected' : ''}>Hoch</option>
                         <option value="mittel" ${massnahme.priority === 'mittel' ? 'selected' : ''}>Mittel</option>
@@ -1597,8 +1634,8 @@
                     </select>
                 </div>
                 <div class="edit-actions">
-                    <button class="save-btn" onclick="saveMassnahme(${index})">Save</button>
-                    <button class="cancel-btn" onclick="cancelEditMassnahme(${index})">Cancel</button>
+                    <button class="save-btn" onclick="saveMassnahme(${index})">Speichern</button>
+                    <button class="cancel-btn" onclick="cancelEditMassnahme(${index})">Abbrechen</button>
                 </div>
             `;
 
@@ -1652,7 +1689,7 @@
         }
 
         async function acceptMassnahme(index) {
-            if (confirm('Are you sure you want to accept this massnahme?')) {
+            if (confirm('Ist diese Maßnahme umgesetzt worden?')) {
                 // For now, we'll just remove it from the list
                 // In a real app, you might want to move it to an "accepted" category
                 await deleteMassnahme(index);
@@ -1660,7 +1697,7 @@
         }
 
         async function declineMassnahme(index) {
-            if (confirm('Are you sure you want to decline this massnahme?')) {
+            if (confirm('Möchtest du diese Maßnahme ablehnen?')) {
                 await deleteMassnahme(index);
             }
         }
@@ -1797,7 +1834,7 @@
                     
                     const saveBtn = document.createElement('button');
                     saveBtn.className = 'note-edit';
-                    saveBtn.textContent = 'Save';
+                    saveBtn.textContent = 'Speichern';
                     saveBtn.onclick = () => {
                         updateNote(note.id, textarea.value, categorySelect.value);
                         editingNoteId = null;
@@ -1805,7 +1842,7 @@
                     
                     const cancelBtn = document.createElement('button');
                     cancelBtn.className = 'note-delete';
-                    cancelBtn.textContent = 'Cancel';
+                    cancelBtn.textContent = 'Abbrechen';
                     cancelBtn.onclick = () => {
                         editingNoteId = null;
                         renderNotes();
@@ -1828,7 +1865,7 @@
                     const editBtn = document.createElement('button');
                     editBtn.className = 'note-edit';
                     editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-                    editBtn.title = 'Edit';
+                    editBtn.title = 'Bearbeiten';
                     editBtn.onclick = () => {
                         editingNoteId = note.id;
                         renderNotes();
@@ -1837,7 +1874,7 @@
                     const acceptBtn = document.createElement('button');
                     acceptBtn.className = 'note-accept';
                     acceptBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>';
-                    acceptBtn.title = 'Accept';
+                    acceptBtn.title = 'Akzeptieren';
                     acceptBtn.onclick = () => {
                         // Add accept functionality here
                         console.log('Accept note:', note.id);
@@ -1846,7 +1883,7 @@
                     const declineBtn = document.createElement('button');
                     declineBtn.className = 'note-delete';
                     declineBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-                    declineBtn.title = 'Decline';
+                    declineBtn.title = 'Ablehnen';
                     declineBtn.onclick = () => deleteNote(note.id);
                     
                     noteElement.appendChild(textSpan);
@@ -1929,7 +1966,7 @@
                 
                 // Ensure there's always a welcome message from AI as the first entry
                 if (messages.length === 0 || messages[0].role !== 'assistant') {
-                    const welcomeMessage = { role: 'assistant', text: 'Hello and welcome, how can I help you?' };
+                    const welcomeMessage = { role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' };
                     messages.unshift(welcomeMessage);
                     saveChatMessages(messages);
                 }
@@ -1937,7 +1974,7 @@
                 return messages;
             } catch { 
                 // If there's an error, return just the welcome message
-                const welcomeMessage = [{ role: 'assistant', text: 'Hello and welcome, how can I help you?' }];
+                const welcomeMessage = [{ role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' }];
                 saveChatMessages(welcomeMessage);
                 return welcomeMessage;
             }
@@ -1955,7 +1992,7 @@
                 // Ensure there's always a welcome message from AI as the first entry
                 const messages = data.messages;
                 if (messages.length === 0 || messages[0].role !== 'assistant') {
-                    const welcomeMessage = { role: 'assistant', text: 'Hello and welcome, how can I help you?' };
+                    const welcomeMessage = { role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' };
                     messages.unshift(welcomeMessage);
                 }
                 
