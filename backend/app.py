@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, validator
 from groq import Groq
 
@@ -21,11 +23,11 @@ client = Groq(
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-EVENTS_FILE = PROJECT_ROOT / "events.json"
-NOTES_FILE = PROJECT_ROOT / "notes.json"
-CHAT_FILE = PROJECT_ROOT / "messages.json"
-MASSNAHMEN_FILE = PROJECT_ROOT / "massnahmen.json"
-TABLE_CSV_FILE = PROJECT_ROOT / "table.csv"
+EVENTS_FILE = PROJECT_ROOT / "data" / "events.json"
+NOTES_FILE = PROJECT_ROOT / "data" / "notes.json"
+CHAT_FILE = PROJECT_ROOT / "data" / "messages.json"
+MASSNAHMEN_FILE = PROJECT_ROOT / "data" / "massnahmen.json"
+TABLE_CSV_FILE = PROJECT_ROOT / "data" / "table.csv"
 
 
 class Event(BaseModel):
@@ -262,8 +264,9 @@ User Input: {user_message}
         return f"I apologize, but I encountered an error while processing your request: {str(e)}"
 
 
-app = FastAPI(title="Calendar Events API")
+app = FastAPI(title="Fraunhofer Hybrid Work Management API")
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # allow all origins, including file:// via wildcard
@@ -271,6 +274,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files
+app.mount("/assets", StaticFiles(directory=str(PROJECT_ROOT / "assets")), name="assets")
+app.mount("/frontend", StaticFiles(directory=str(PROJECT_ROOT / "frontend")), name="frontend")
+
+# Serve the main HTML file
+@app.get("/")
+async def read_index():
+    return FileResponse(str(PROJECT_ROOT / "frontend" / "index.html"))
 
 
 @app.get("/events", response_model=EventsResponse)
@@ -336,8 +348,8 @@ def delete_event(
     return EventsResponse(events=coerced)
 
 
-@app.get("/")
-def root() -> dict:
+@app.get("/api/status")
+def api_status() -> dict:
     return {"status": "ok"}
 
 

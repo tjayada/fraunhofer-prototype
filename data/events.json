@@ -1,0 +1,34 @@
+{
+  "Montag": [
+    {
+      "title": "Team Impuls",
+      "description": "Um gut in die Woche zu starten wechseln sich die Team-Mitglieder ab, um Impulse f\u00fcr aktuelle Themen zu geben.",
+      "hour": 9,
+      "duration": 1
+    }
+  ],
+  "Mittwoch": [
+    {
+      "title": "Team Meeting \n (Pr\u00e4senz)",
+      "description": "Gemeinsam wird die derzeitige Arbeit, Probleme und L\u00f6sungsvorschl\u00e4ge diskutiert.",
+      "hour": 11,
+      "duration": 2
+    }
+  ],
+  "Freitag": [
+    {
+      "title": "1:1 Coffee Chat",
+      "description": "Ein informelles, regelm\u00e4\u00dfiges Gespr\u00e4ch zwischen zwei Teammitgliedern, Remote oder vor Ort.",
+      "hour": 14,
+      "duration": 1
+    }
+  ],
+  "Dienstag": [
+    {
+      "title": "BiWeekly Insights",
+      "description": "Das Unternehmen stellt seine aktuellen Visionen, Auftr\u00e4ge und Zahlen vor.",
+      "hour": 15,
+      "duration": 2
+    }
+  ]
+}

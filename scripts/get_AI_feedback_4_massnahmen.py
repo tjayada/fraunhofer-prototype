@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # load system prompt from file
-with open("system_prompt_massnahmen.txt", "r") as file:
+with open("../prompts/system_prompt_massnahmen.txt", "r") as file:
     system_prompt_massnahmen = file.read()
 
 client = Groq(
@@ -26,13 +26,13 @@ def load_survey_data(url):
     # Check if the request was successful
     if response.status_code == 200:
         # Write the content to a CSV file
-        with open('table.csv', 'wb') as file:
+        with open('../data/table.csv', 'wb') as file:
             file.write(response.content)
-        print("File downloaded successfully as 'table.csv'")
+        print("File downloaded successfully as '../data/table.csv'")
     else:
         print(f"Failed to download file. Status code: {response.status_code}")
 
-    filename = 'table.csv'
+    filename = '../data/table.csv'
     pd = pandas.read_csv(filename, sep=',')
     # drop first two rows
     pd = pd.drop(pd.index[0])
@@ -42,7 +42,7 @@ def load_survey_data(url):
     pd = pd.dropna(axis=1, how='all')
 
     # save altered dataframe to csv
-    pd.to_csv('table.csv', index=False)
+    pd.to_csv('../data/table.csv', index=False)
     return pd
 
 
@@ -126,10 +126,10 @@ def main():
     #pd = load_survey_data(url)
 
     # just load the csv file to save time
-    pd = pandas.read_csv('table.csv', sep=',')
+    pd = pandas.read_csv('../data/table.csv', sep=',')
     print(pd.head())
 
-    instructions_massnahmen = open("instructions_massnahmen.txt", "r").read()
+    instructions_massnahmen = open("../prompts/instructions_massnahmen.txt", "r").read()
     #message_user = "Explain the importance of fast language models"
 
     entire_data = ""
@@ -148,7 +148,7 @@ def main():
     #print(chat_completion)
 
     # write response into massnahmen.json file
-    with open('massnahmen.json', 'w') as file:
+    with open('../data/massnahmen.json', 'w') as file:
         json.dump(chat_completion, file)
 
 

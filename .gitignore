@@ -1,9 +1,7 @@
 __pycache__
-events.json
 notes.json
 /venv
 .DS_Store
 .env
 todo
-table.csv
 backup-to-delete
