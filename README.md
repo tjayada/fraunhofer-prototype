@@ -1,4 +1,4 @@
-<img title="TeamFlow" alt="The TeamFlow logo is 3 people in union in blue with the name next to it" src="assets/logo.png" width="300">
+<img title="TeamFlow" alt="The TeamFlow logo is 3 people in union in blue with the name next to it" src="assets/logo.jpeg" width="350">
 
 
 # Fraunhofer Hybrid Work Management Application
@@ -62,7 +62,7 @@ fraunhofer-prototype/
 - **AI-Generated Insights**: Automatic generation of events and measures based on survey results
 - **Scientific Foundation**: Based on Fraunhofer IAO research on hybrid work
 
-<img title="Wochenplan" alt="Screenshot of the weekly calender" src="assets/wochenplan.png" width="600">
+<img title="Wochenplan" alt="Screenshot of the weekly calender" src="assets/wochenplan.png" width="700">
 
 ### Team Measures (Maßnahmen)
 - **Categorized Measures**: Organize measures into three categories:
@@ -73,7 +73,7 @@ fraunhofer-prototype/
 - **CRUD Operations**: Create, read, update, and delete measures
 - **Status Management**: Accept, decline, or edit measures
 
-<img title="Maßnahmen" alt="Screenshot of the recommended team measures" src="assets/massnahmen.png" width="600">
+<img title="Maßnahmen" alt="Screenshot of the recommended team measures" src="assets/massnahmen.png" width="700">
 
 ## 🛠️ Setup Instructions
 
@@ -85,10 +85,10 @@ fraunhofer-prototype/
 
 1. **Clone or download the project**
 	   
-	   ```bash
-	   git clone https://github.com/tjayada/fraunhofer-prototype.git
-	   cd fraunhofer-prototype
-	   ```
+   ```bash
+   git clone https://github.com/tjayada/fraunhofer-prototype.git
+   cd fraunhofer-prototype
+   ```
 
 2. **Create and activate virtual environment**
    
