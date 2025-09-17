@@ -2059,7 +2059,7 @@
                 
                 // Ensure there's always a welcome message from AI as the first entry
                 if (messages.length === 0 || messages[0].role !== 'assistant') {
-                    const welcomeMessage = { role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' };
+                    const welcomeMessage = { role: 'assistant', text: 'Guten Abend Carina, wie kann ich dir weiterhelfen?' };
                     messages.unshift(welcomeMessage);
                     saveChatMessages(messages);
                 }
@@ -2067,7 +2067,7 @@
                 return messages;
             } catch { 
                 // If there's an error, return just the welcome message
-                const welcomeMessage = [{ role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' }];
+                const welcomeMessage = [{ role: 'assistant', text: 'Guten Abend Carina, wie kann ich dir weiterhelfen?' }];
                 saveChatMessages(welcomeMessage);
                 return welcomeMessage;
             }
@@ -2085,7 +2085,7 @@
                 // Ensure there's always a welcome message from AI as the first entry
                 const messages = data.messages;
                 if (messages.length === 0 || messages[0].role !== 'assistant') {
-                    const welcomeMessage = { role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' };
+                    const welcomeMessage = { role: 'assistant', text: 'Guten Abend Carina, wie kann ich dir weiterhelfen?' };
                     messages.unshift(welcomeMessage);
                 }
                 
@@ -2151,7 +2151,7 @@
                         const updatedMessages = data.messages || [];
                         // Ensure the initial assistant welcome message is persistent
                         if (updatedMessages.length === 0 || updatedMessages[0].role !== 'assistant') {
-                            updatedMessages.unshift({ role: 'assistant', text: 'Hallo und willkommen, wie kann ich dir helfen?' });
+                            updatedMessages.unshift({ role: 'assistant', text: 'Guten Abend Carina, wie kann ich dir weiterhelfen?' });
                         }
                         saveChatMessages(updatedMessages);
                         renderChatMessages(renderTargetId, updatedMessages);

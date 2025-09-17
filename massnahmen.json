@@ -1,14 +1,9 @@
 {
   "einmalige_massnahmen": [
     {
-      "title": "Team-Building Workshop",
-      "description": "Ein Workshop zur St\u00e4rkung der Teamdynamik und Kommunikation, insbesondere um das Gemeinschaftsgef\u00fchl zu st\u00e4rken und Absprachen effizienter zu gestalten.",
-      "priority": "mittel"
-    },
-    {
       "title": "Verbindliche Kamera-Nutzung in hybriden Meetings",
       "description": "Teilnehmer schalten in hybriden Besprechungen verpflichtend die Kamera ein, um mehr Pr\u00e4senz, bessere Kommunikation und ein st\u00e4rkeres Gemeinschaftsgef\u00fchl zu schaffen.",
-      "priority": "mittel"
+      "priority": "hoch"
     }
   ],
   "arbeitsplatz": [
@@ -27,7 +22,7 @@
     {
       "title": "Bewegte Pause - Energie tanken in 10 Minuten",
       "description": "Eine kurze, angeleitete Bewegungseinheit zur Auflockerung im Arbeitsalltag.\nSie unterst\u00fctzt Wohlbefinden und Konzentration und l\u00e4sst sich unkompliziert in den Tagesablauf integrieren.",
-      "priority": "mittel"
+      "priority": "niedrig"
     }
   ]
 }
